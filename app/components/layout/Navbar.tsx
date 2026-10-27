@@ -96,8 +96,8 @@ export default function Navbar() {
       <header
         className={`fixed w-full top-0 z-40 will-change-transform transition-colors duration-200 ${
           scrolled
-            ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-zinc-200/80 py-3.5"
-            : "bg-white/85 backdrop-blur-sm border-b border-zinc-100/60 py-4"
+            ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-zinc-200/80"
+            : "bg-white/85 backdrop-blur-sm border-b border-zinc-100/60 py-2"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

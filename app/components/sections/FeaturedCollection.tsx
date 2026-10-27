@@ -89,7 +89,7 @@ export default function FeaturedCollection() {
                       alt={item.name}
                       fill
                       unoptimized
-                      className="object-contain object-center scale-[1.12] transition-transform duration-700 group-hover:scale-[1.18]"
+                      className="object-contain object-center transition-transform duration-700 group-hover:scale-[1.18]"
                     />
                   </Link>
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 pointer-events-none" />
@@ -110,7 +110,7 @@ export default function FeaturedCollection() {
                     {item.category}
                   </p>
                   <Link href={`/products/${item.slug}`} className="block group">
-                    <h3 className="text-base md:text-lg font-playfair text-zinc-900 mb-1 group-hover:text-gold-500 transition-colors line-clamp-1">
+                    <h3 className="text-sm md:text-base font-playfair text-zinc-900 mb-1 group-hover:text-gold-500 transition-colors line-clamp-1">
                       {item.name}
                     </h3>
                   </Link>

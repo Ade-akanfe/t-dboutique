@@ -32,11 +32,11 @@ export default function NewArrivalsSection() {
   return (
     <section id="new-arrivals" className="py-10 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+        <div className="text-left mb-12">
           <h2 className="text-3xl md:text-4xl font-serif text-zinc-900 mb-3">
             New <span className="italic font-light" style={{ color: '#D4AF37' }}>Arrivals</span>
           </h2>
-          <p className="text-zinc-500 max-w-2xl mx-auto">
+          <p className="text-zinc-500 mx-auto">
             Discover the latest products added to our collection.
           </p>
         </div>
@@ -50,7 +50,7 @@ export default function NewArrivalsSection() {
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="absolute inset-0 w-full h-full object-contain object-center scale-[1.12] group-hover:scale-[1.18] transition-transform duration-700 ease-in-out"
+                    className="absolute inset-0 w-full h-full object-contain object-center  group-hover:scale-[1.18] transition-transform duration-700 ease-in-out"
                   />
                 </Link>
                 {/* Add to Cart on hover */}
@@ -66,7 +66,7 @@ export default function NewArrivalsSection() {
               <div className="flex flex-col items-center text-center">
                 <p className="text-xs text-zinc-400 mb-1 uppercase tracking-wider">{product.category}</p>
                 <Link href={`/products/${product.slug}`} className="block group">
-                  <h3 className="text-base md:text-lg font-serif text-zinc-900 mb-1 group-hover:text-gold-500 transition-colors line-clamp-1">
+                  <h3 className="text-sm md:text-base font-serif text-zinc-900 mb-1 group-hover:text-gold-500 transition-colors line-clamp-1">
                     {product.name}
                   </h3>
                 </Link>

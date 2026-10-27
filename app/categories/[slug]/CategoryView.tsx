@@ -64,7 +64,7 @@ export default function CategoryView({
     <div id="categories" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
       {/* Breadcrumb */}
-      <nav className="flex mb-8 text-sm text-zinc-500">
+      <nav className="flex mb-3 text-xs md:text-sm text-zinc-500">
         <Link href="/" className="hover:text-zinc-900 transition-colors">Home</Link>
         <span className="mx-2">/</span>
         <Link href="/categories/all" className="hover:text-zinc-900 transition-colors">Categories</Link>
@@ -73,22 +73,22 @@ export default function CategoryView({
       </nav>
 
       {/* Header Banner */}
-      <div className="mb-10 border-b border-zinc-200 pb-8">
+      <div className="mb-5 border-b border-zinc-200 pb-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-semibold uppercase tracking-wider mb-3" style={{ borderColor: 'rgba(212, 175, 55, 0.3)', color: '#a18143', background: 'rgba(212, 175, 55, 0.05)' }}>
-              <Sparkles className="w-3 h-3" style={{ color: '#D4AF37' }} />
+              <Sparkles className="w-3 h-3 text-xs md:text-sm" style={{ color: '#D4AF37' }} />
               Exclusive Boutique Collection
             </div>
-            <h1 className="text-4xl md:text-5xl font-serif text-zinc-900 mb-3 capitalize">
+            <h1 className="text-2xl md:text-3xl font-serif text-zinc-900 mb-3 capitalize">
               {categoryTitle}
             </h1>
-            <p className="text-base md:text-lg text-zinc-600">
+            <p className="text-sm md:text-lg text-zinc-600">
               {categoryDescription}
             </p>
           </div>
 
-          <div className="text-sm text-zinc-500 font-medium whitespace-nowrap bg-white px-4 py-2 rounded-lg border border-zinc-200 shadow-sm self-start md:self-auto">
+          <div className="text-xs md:text-sm text-zinc-500 font-medium whitespace-nowrap bg-white px-4 py-2 rounded-lg border border-zinc-200 shadow-sm self-start md:self-auto">
             Showing <span className="font-bold text-zinc-900">{filteredProducts.length}</span> piece{filteredProducts.length === 1 ? '' : 's'}
           </div>
         </div>
@@ -198,7 +198,7 @@ export default function CategoryView({
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="object-contain object-center w-full h-full scale-[1.12] group-hover:scale-[1.18] transition-transform duration-500 ease-out"
+                      className="object-contain object-center w-full h-full group-hover:scale-[1.18] transition-transform duration-500 ease-out"
                     />
                   </Link>
                   
@@ -223,7 +223,7 @@ export default function CategoryView({
                 <div>
                   <p className="text-[11px] md:text-xs text-zinc-400 uppercase tracking-wider mb-1">{product.category}</p>
                   <Link href={`/products/${product.slug}`} className="block group">
-                    <h3 className="text-sm md:text-base font-serif text-zinc-900 leading-snug group-hover:text-gold-500 transition-colors line-clamp-2">
+                    <h3 className="text-xs md:text-sm font-serif text-zinc-900 leading-snug group-hover:text-gold-500 transition-colors line-clamp-2">
                       {product.name}
                     </h3>
                   </Link>

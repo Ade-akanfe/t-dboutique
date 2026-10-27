@@ -357,7 +357,7 @@ function AdminPageInner() {
                             <img
                               src={product.image}
                               alt={product.name}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                             />
                             {product.isNew && (
                               <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-zinc-900" title="New Arrival" />
@@ -486,7 +486,7 @@ function AdminPageInner() {
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                     />
                     
                     {/* Badge */}
