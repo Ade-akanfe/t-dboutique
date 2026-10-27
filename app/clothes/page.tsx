@@ -1,0 +1,93 @@
+import { Metadata } from 'next';
+import Navbar from '../components/layout/Navbar';
+import Footer from '../components/layout/Footer';
+import CategoryView from '../categories/[slug]/CategoryView';
+import { cloudinaryImage } from '../lib/cloudinaryImages';
+
+export const metadata: Metadata = {
+  title: "Women's Clothes, Skirts & Blouses | T&D Boutique Lagos (Worldwide Delivery)",
+  description:
+    "Shop premium women's skirts, blouses, two-piece sets, and luxury clothing looks at T&D Boutique Lagos, Nigeria. Contemporary African couture and curated European labels with fast nationwide delivery in Nigeria and worldwide express shipping to the UK, US, Canada, Europe & Africa.",
+  keywords: [
+    'womens clothes lagos',
+    'skirts and blouses nigeria',
+    'nigerian boutique clothing',
+    'luxury skirts lagos',
+    'designer tops and blouses nigeria',
+    'two piece outfits lagos',
+    'boutique in lagos nigeria',
+    'buy clothes online nigeria',
+    'worldwide delivery nigerian clothing',
+    'uk shipping nigerian boutique',
+    't&d fashion trend boutique',
+  ],
+  alternates: {
+    canonical: '/clothes',
+  },
+  openGraph: {
+    title: "Women's Luxury Clothes & Skirts | T&D Ladies Fashion Lagos",
+    description:
+      'Curated skirts, blouses, and designer sets from T&D Collections. Handcrafted luxury with fast delivery in Nigeria and worldwide express shipping.',
+    url: '/clothes',
+    siteName: 'T&D Ladies Fashion Boutique',
+    locale: 'en_NG',
+    type: 'website',
+    images: [
+      {
+        url: cloudinaryImage('product-01.jpg'),
+        width: 800,
+        height: 1066,
+        alt: 'T&D Boutique Women Clothes Lagos',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Women's Clothes & Skirts | T&D Boutique Lagos",
+    description:
+      "Shop luxury women's clothing from Lagos, Nigeria. Fast doorstep delivery nationwide and worldwide express shipping.",
+    images: [cloudinaryImage('product-01.jpg')],
+  },
+};
+
+export default function ClothesPage() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': ['CollectionPage', 'ClothingStore'],
+    name: "Women's Clothing Collection — T&D Boutique Lagos",
+    description:
+      "Exclusive skirts, blouses, and fashion looks crafted and curated in Lagos, Nigeria with worldwide express delivery.",
+    url: 'https://tdfashiontrend.com/clothes',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Lagos',
+      addressCountry: 'NG',
+    },
+    currenciesAccepted: 'NGN, USD, GBP, EUR',
+    areaServed: [
+      { '@type': 'Country', name: 'Nigeria' },
+      { '@type': 'Country', name: 'United Kingdom' },
+      { '@type': 'Country', name: 'United States' },
+      { '@type': 'Country', name: 'Canada' },
+      { '@type': 'Country', name: 'Worldwide' },
+    ],
+  };
+
+  return (
+    <main className="flex min-h-screen flex-col w-full overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <Navbar />
+      <div className="bg-zinc-50 pt-28 md:pt-32 pb-20 flex-grow">
+        <CategoryView
+          currentSlug="clothes"
+          categoryTitle="Clothes (Skirts & Blouses)"
+          categoryDescription="Contemporary clothing looks from T&D Collections and selected international designer labels. Doorstep dispatch in Lagos, nationwide delivery across Nigeria & express worldwide shipping."
+        />
+      </div>
+      <Footer />
+    </main>
+  );
+}
