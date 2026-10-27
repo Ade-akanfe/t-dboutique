@@ -35,7 +35,7 @@ export default function AboutSection() {
             
             <div className="space-y-6 text-zinc-300 text-lg leading-relaxed mb-10">
               <p>
-                At T&D Fashion Trend, we believe that true style is a reflection of your innermost self. 
+                At T&amp;D Ladies Fashion, we believe that true style is a reflection of your innermost self.
                 Founded with a passion for premium aesthetics and uncompromising quality, our boutique 
                 curates collections that empower you to express your unique identity.
               </p>

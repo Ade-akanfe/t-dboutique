@@ -1,9 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { removeFromCart, updateQuantity, clearCart } from '../../store/features/cartSlice';
 import { X, Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
+import CheckoutDialog from './CheckoutDialog';
+import { parseMoneyAmount } from '../../lib/money';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -13,16 +16,23 @@ interface CartDrawerProps {
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const dispatch = useDispatch();
   const items = useSelector((state: RootState) => state.cart.items);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
-  const total = items.reduce((sum, item) => {
-    const numericPrice = parseFloat(item.price.replace(/[₦,]/g, ''));
-    return sum + numericPrice * item.quantity;
-  }, 0);
+  const parsedPrices = items.map((item) => parseMoneyAmount(item.price));
+  const hasInvalidPrice = parsedPrices.some((price) => price === null);
+  const total = items.reduce((sum, item, index) => sum + (parsedPrices[index] ?? 0) * item.quantity, 0);
 
-  const formattedTotal = `₦${total.toLocaleString('en-NG')}`;
+  const formattedTotal = hasInvalidPrice
+    ? 'Price unavailable'
+    : `₦${total.toLocaleString('en-NG')}`;
 
   return (
     <>
+      <CheckoutDialog
+        isOpen={isCheckoutOpen}
+        items={items}
+        onClose={() => setIsCheckoutOpen(false)}
+      />
       {/* Overlay */}
       {isOpen && (
         <div
@@ -128,7 +138,14 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               <span className="text-zinc-500 text-sm">Subtotal</span>
               <span className="text-lg font-bold font-playfair text-zinc-900">{formattedTotal}</span>
             </div>
+            {hasInvalidPrice && (
+              <p role="alert" className="text-sm text-red-600">
+                We couldn&apos;t read a price in your cart. Remove the affected item and add it again.
+              </p>
+            )}
             <button
+              onClick={() => setIsCheckoutOpen(true)}
+              disabled={hasInvalidPrice}
               className="w-full py-3.5 rounded-md font-semibold text-sm tracking-wider uppercase transition-all duration-200 text-zinc-900"
               style={{ background: 'linear-gradient(135deg, #D4AF37 0%, #C5A028 50%, #a18143 100%)' }}
             >

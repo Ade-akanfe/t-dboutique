@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react';
 import { X, FolderPlus, Sparkles, Trash2 } from 'lucide-react';
-import { CategoryInfo } from '../../categories/[slug]/categoryData';
-import { cloudinaryImage } from '../../lib/cloudinaryImages';
+import type { CategoryInfo } from '../../lib/productTypes';
 
 interface CategoryModalProps {
   isOpen: boolean;
@@ -23,7 +22,7 @@ export default function CategoryModal({
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
   const [description, setDescription] = useState('');
-  const [bannerImage, setBannerImage] = useState(cloudinaryImage('product-01.jpg'));
+  const [bannerImage, setBannerImage] = useState('');
   const [error, setError] = useState('');
 
   const handleNameChange = (val: string) => {
@@ -47,8 +46,8 @@ export default function CategoryModal({
     onAddCategory({
       name: name.trim(),
       slug: cleanSlug,
-      description: description.trim() || `Explore the exclusive ${name.trim()} collection at T&D Fashion Trend.`,
-      bannerImage: bannerImage.trim() || cloudinaryImage('product-01.jpg'),
+      description: description.trim() || `Explore the exclusive ${name.trim()} collection at T&D Ladies Fashion.`,
+      bannerImage: bannerImage.trim(),
     });
 
     setName('');
@@ -157,7 +156,7 @@ export default function CategoryModal({
                   type="text"
                   value={bannerImage}
                   onChange={(e) => setBannerImage(e.target.value)}
-                  placeholder={cloudinaryImage('product-01.jpg')}
+                  placeholder="Paste the uploaded image URL"
                   className="w-full px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-sm font-mono focus:border-gold-500 focus:outline-none"
                 />
               </div>

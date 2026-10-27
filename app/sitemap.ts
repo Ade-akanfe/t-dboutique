@@ -1,9 +1,18 @@
 import { MetadataRoute } from 'next';
-import { ALL_PRODUCTS } from './categories/[slug]/categoryData';
+import { createPublicSupabaseClient } from './lib/publicSupabase';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://tdfashiontrend.com';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const supabase = createPublicSupabaseClient();
+  const { data: products, error } = await supabase
+    .from('products')
+    .select('slug, created_at');
+  if (error) {
+    console.error('Failed to load product URLs for sitemap:', error.message);
+    throw new Error('Failed to load products for sitemap.');
+  }
+
   const staticRoutes = [
     {
       url: `${BASE_URL}`,
@@ -36,6 +45,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${BASE_URL}/bags`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/shoes`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.9,
+    },
+    {
       url: `${BASE_URL}/categories/all`,
       lastModified: new Date(),
       changeFrequency: 'daily' as const,
@@ -49,9 +70,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  const productRoutes = ALL_PRODUCTS.map((product) => ({
+  const productRoutes = (products ?? []).map((product) => ({
     url: `${BASE_URL}/products/${product.slug}`,
-    lastModified: new Date(),
+    lastModified: product.created_at ? new Date(product.created_at) : new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.8,
   }));

@@ -18,17 +18,22 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "T&D Fashion Trend | Premium Boutique",
-  description: "Discover the latest premium fashion trends at T&D Fashion Trend. Exclusive collections, elegant designs, and modern style.",
-  keywords: ["boutique", "fashion", "trends", "T&D", "clothing", "premium fashion"],
+  title: "T&D Ladies Fashion | Premium Boutique",
+  description: "Discover elegant clothing, bags, and shoes from T&D Ladies Fashion.",
+  keywords: ["boutique", "fashion", "T&D Ladies Fashion", "clothing", "premium fashion"],
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
   openGraph: {
-    title: "T&D Fashion Trend",
-    description: "Discover the latest premium fashion trends at T&D Fashion Trend.",
+    title: "T&D Ladies Fashion",
+    description: "Discover elegant clothing, bags, and shoes from T&D Ladies Fashion.",
     images: [
       {
-        url: "/logo.jpg",
-        width: 800,
-        height: 600,
+        url: "/logo.png",
+        width: 1024,
+        height: 1024,
       },
     ],
     locale: "en_US",

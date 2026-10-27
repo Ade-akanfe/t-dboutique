@@ -3,25 +3,19 @@
 import React from 'react';
 import Link from 'next/link';
 import ProductDetailView from './ProductDetailView';
-import { Product } from '../../categories/[slug]/categoryData';
 import { useProducts } from '../../context/ProductContext';
 
 interface ProductPageClientProps {
   slug: string;
-  initialProduct?: Product | null;
-  initialRelated?: Product[];
 }
 
 export default function ProductPageClient({
   slug,
-  initialProduct,
-  initialRelated = [],
 }: ProductPageClientProps) {
   const { getProductBySlug, products, isLoaded } = useProducts();
 
   // Find live product
-  const liveProduct = isLoaded ? getProductBySlug(slug) : undefined;
-  const currentProduct = liveProduct || initialProduct;
+  const currentProduct = isLoaded ? getProductBySlug(slug) : undefined;
 
   if (!currentProduct && isLoaded) {
     return (
@@ -52,11 +46,9 @@ export default function ProductPageClient({
     );
   }
 
-  const related = initialRelated.length > 0
-    ? initialRelated
-    : products
-        .filter((p) => p.categorySlug === currentProduct.categorySlug && String(p.id) !== String(currentProduct.id))
-        .slice(0, 4);
+  const related = products
+    .filter((p) => p.categorySlug === currentProduct.categorySlug && String(p.id) !== String(currentProduct.id))
+    .slice(0, 4);
 
   return (
     <div className="bg-zinc-50 pt-28 md:pt-32 pb-20 flex-grow">

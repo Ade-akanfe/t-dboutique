@@ -1,12 +1,18 @@
-import Link from 'next/link';
-import { cloudinaryImage } from '../../lib/cloudinaryImages';
+'use client';
 
-const categories = [
-  { name: 'Clothes (Skirts & Blouses)', slug: 'clothes', image: cloudinaryImage('product-01.jpg') },
-  { name: 'Gowns', slug: 'gowns', image: cloudinaryImage('product-383.jpg') },
-];
+import Link from 'next/link';
+import { useProducts } from '../../context/ProductContext';
 
 export default function CategorySection() {
+  const { categories, isLoaded } = useProducts();
+  const categoriesWithImages = isLoaded
+    ? categories.filter(
+        (category) =>
+          category.slug.toLowerCase() !== 'pants' &&
+          category.bannerImage.trim().length > 0
+      )
+    : [];
+
   return (
     <section id="categories" className="py-10 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,19 +25,18 @@ export default function CategorySection() {
           </div>
         </div>
 
-        {/* 2-column on mobile, 3-column on desktop */}
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
-          {categories.map((category) => (
+        {/* Two columns on smaller screens and four equal category cards on large screens */}
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+          {categoriesWithImages.map((category) => (
             <Link
               key={category.slug}
               href={`/categories/${category.slug}`}
-              className="group relative overflow-hidden rounded-xl bg-zinc-100"
-              style={{ height: '280px' }}
+              className="group relative block aspect-[4/5] overflow-hidden rounded-xl bg-zinc-100"
             >
               <img
-                src={category.image}
+                src={category.bannerImage}
                 alt={category.name}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                className="absolute inset-0 w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 ease-in-out"
               />
               {/* Gold gradient overlay */}
               <div
@@ -60,6 +65,11 @@ export default function CategorySection() {
             </Link>
           ))}
         </div>
+        {isLoaded && categoriesWithImages.length === 0 && (
+          <p className="mt-6 text-center text-sm text-zinc-500">
+            No categories with uploaded images are available yet.
+          </p>
+        )}
       </div>
     </section>
   );

@@ -7,6 +7,7 @@ import { ShoppingBag } from 'lucide-react';
 
 interface Product {
   id: number | string;
+  slug: string;
   name: string;
   price: string;
   image: string;

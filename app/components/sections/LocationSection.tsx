@@ -23,7 +23,7 @@ export default function LocationSection() {
                   Location
                 </h3>
                 <p className="text-zinc-600 leading-relaxed">
-                  T&D Fashion Trend<br />
+                  T&amp;D Ladies Fashion<br />
                   123 Fashion Avenue<br />
                   New York, NY 10001
                 </p>

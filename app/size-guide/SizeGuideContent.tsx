@@ -58,7 +58,7 @@ export default function SizeGuideContent() {
           Women&apos;s Size &amp; Fit Guide
         </h1>
         <p className="text-base md:text-lg text-zinc-600 leading-relaxed">
-          At T&amp;D Fashion Trend Boutique Lagos, every piece is curated for timeless elegance. Use our international conversion charts below to select your ideal fit, whether you order across Nigeria or with our worldwide express shipping.
+          At T&amp;D Ladies Fashion Boutique Lagos, every piece is curated for timeless elegance. Use our international conversion charts below to select your ideal fit, whether you order across Nigeria or with our worldwide express shipping.
         </p>
       </div>
 

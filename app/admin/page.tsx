@@ -34,7 +34,6 @@ function AdminPageInner() {
     deleteProduct,
     addCategory,
     deleteCategory,
-    resetCatalog,
     isLoaded,
   } = useProducts();
   const { user, signOut } = useAuth();
@@ -100,7 +99,7 @@ function AdminPageInner() {
         break;
       case 'newest':
       default:
-        result.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+        result.sort((a, b) => (Date.parse(b.createdAt || '') || 0) - (Date.parse(a.createdAt || '') || 0));
         break;
     }
 
@@ -167,22 +166,6 @@ function AdminPageInner() {
     toast.success('Category removed.', { icon: '🗑️' });
   };
 
-  const handleResetCatalog = async () => {
-    if (window.confirm('Reset all products and categories to the imported catalog?')) {
-      try {
-        const resetSucceeded = await resetCatalog();
-        if (resetSucceeded) {
-          toast.success('Catalog restored to the imported products.', { icon: '🔄' });
-        } else {
-          toast.error('Catalog reset failed. Check the connection and database permissions.');
-        }
-      } catch (error) {
-        console.error('Catalog reset failed:', error);
-        toast.error('Catalog reset failed. Check the connection and try again.');
-      }
-    }
-  };
-
   const handleSignOut = async () => {
     await signOut();
     toast.success('Signed out successfully.');
@@ -194,7 +177,6 @@ function AdminPageInner() {
       <AdminHeader
         onOpenProductModal={handleOpenCreateModal}
         onOpenCategoryModal={() => setIsCategoryModalOpen(true)}
-        onResetCatalog={handleResetCatalog}
         userEmail={user?.email}
         onSignOut={handleSignOut}
       />
@@ -623,4 +605,3 @@ export default function AdminPage() {
     </AuthGuard>
   );
 }
-

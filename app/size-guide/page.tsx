@@ -18,10 +18,10 @@ export const metadata: Metadata = {
     'worldwide delivery nigerian fashion',
   ],
   openGraph: {
-    title: 'Size Guide & Measurement Chart | T&D Fashion Trend Lagos',
+    title: 'Size Guide & Measurement Chart | T&D Ladies Fashion Lagos',
     description:
       'Find your exact fit with our comprehensive UK, US, Turkey, and Free Size guide. Worldwide express delivery available from Lagos, Nigeria.',
-    images: [{ url: '/logo.png', width: 800, height: 600 }],
+    images: [{ url: '/logo.png', width: 469, height: 397 }],
   },
 };
 

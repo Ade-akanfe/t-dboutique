@@ -2,21 +2,18 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Product } from './categoryData';
 import AddToCartButton from './AddToCartButton';
 import { SlidersHorizontal, Sparkles, Search } from 'lucide-react';
 import { useProducts } from '../../context/ProductContext';
 
 interface CategoryViewProps {
   currentSlug: string;
-  initialProducts: Product[];
   categoryTitle: string;
   categoryDescription: string;
 }
 
 export default function CategoryView({
   currentSlug,
-  initialProducts,
   categoryTitle,
   categoryDescription,
 }: CategoryViewProps) {
@@ -24,13 +21,10 @@ export default function CategoryView({
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'newest'>('featured');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Source products from dynamic context once loaded, else fallback to initial
-  const sourceProducts = useMemo(() => {
-    if (isLoaded) {
-      return getProductsByCategory(currentSlug);
-    }
-    return initialProducts;
-  }, [isLoaded, currentSlug, getProductsByCategory, initialProducts]);
+  const sourceProducts = useMemo(
+    () => (isLoaded ? getProductsByCategory(currentSlug) : []),
+    [isLoaded, currentSlug, getProductsByCategory]
+  );
 
   // Filter & Sort Products
   const filteredProducts = useMemo(() => {
@@ -55,7 +49,7 @@ export default function CategoryView({
         result.sort((a, b) => b.rawPrice - a.rawPrice);
         break;
       case 'newest':
-        result.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+        result.sort((a, b) => (Date.parse(b.createdAt || '') || 0) - (Date.parse(a.createdAt || '') || 0));
         break;
       case 'featured':
       default:
@@ -177,7 +171,11 @@ export default function CategoryView({
       </div>
 
       {/* Product Grid — 2 columns on mobile, 4 on desktop */}
-      {filteredProducts.length === 0 ? (
+      {!isLoaded ? (
+        <div className="text-center py-20 bg-white rounded-2xl border border-zinc-200">
+          <p className="text-sm text-zinc-500">Loading products...</p>
+        </div>
+      ) : filteredProducts.length === 0 ? (
         <div className="text-center py-20 bg-white rounded-2xl border border-zinc-200">
           <p className="text-lg font-serif text-zinc-800 mb-2">No pieces found</p>
           <p className="text-sm text-zinc-500 mb-6">Try adjusting your search terms or browse another category.</p>
@@ -195,12 +193,12 @@ export default function CategoryView({
             <div key={product.id} className="group flex flex-col justify-between">
               <div>
                 {/* Image Container with Link */}
-                <div className="relative h-56 sm:h-72 md:aspect-[3/4] md:h-auto bg-zinc-100 mb-4 overflow-hidden rounded-xl">
+                <div className="relative aspect-[3/4] bg-zinc-100 mb-4 overflow-hidden rounded-xl">
                   <Link href={`/products/${product.slug}`} className="block w-full h-full">
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 ease-out"
+                      className="object-contain object-center w-full h-full scale-[1.12] group-hover:scale-[1.18] transition-transform duration-500 ease-out"
                     />
                   </Link>
                   

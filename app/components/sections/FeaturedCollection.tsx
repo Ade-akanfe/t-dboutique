@@ -13,7 +13,12 @@ import { useProducts } from "../../context/ProductContext";
 export default function FeaturedCollection() {
   const dispatch = useDispatch();
   const { products, isLoaded } = useProducts();
-  const featuredItems = isLoaded ? products.slice(0, 4) : [];
+  const featuredItems = isLoaded
+    ? products
+        .filter((product) => typeof product.id === "string" && product.badge?.trim().toLowerCase() === "trending")
+        .sort((a, b) => (Date.parse(b.createdAt || "") || 0) - (Date.parse(a.createdAt || "") || 0))
+        .slice(0, 4)
+    : [];
 
   const handleAddToCart = (item: Product) => {
     dispatch(addToCart({ ...item }));
@@ -74,7 +79,7 @@ export default function FeaturedCollection() {
             >
               <div>
                 {/* Fixed smaller height on mobile with Link */}
-                <div className="relative h-64 sm:h-80 md:h-100 mb-4 overflow-hidden bg-zinc-100 rounded-xl">
+                <div className="relative aspect-[3/4] mb-4 overflow-hidden bg-zinc-100 rounded-xl">
                   <Link
                     href={`/products/${item.slug}`}
                     className="relative block w-full h-full"
@@ -84,7 +89,7 @@ export default function FeaturedCollection() {
                       alt={item.name}
                       fill
                       unoptimized
-                      className="object-contain transition-transform duration-700 group-hover:scale-105"
+                      className="object-contain object-center scale-[1.12] transition-transform duration-700 group-hover:scale-[1.18]"
                     />
                   </Link>
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 pointer-events-none" />

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit3, Save, X, ImageIcon, AlertCircle } from 'lucide-react';
 import { supabase } from '@/app/lib/supabaseClient';
-import { CategoryInfo } from '@/app/categories/[slug]/categoryData';
+import type { CategoryInfo } from '@/app/lib/productTypes';
 
 type ManagedCategory = CategoryInfo & { id: string };
 

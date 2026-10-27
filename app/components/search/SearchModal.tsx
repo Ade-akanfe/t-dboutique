@@ -6,13 +6,13 @@ import Link from 'next/link';
 import { useProducts } from '../../context/ProductContext';
 
 interface SearchModalProps {
-  isOpen: boolean;
+  initialQuery?: string;
   onClose: () => void;
 }
 
-export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
+export default function SearchModal({ initialQuery = '', onClose }: SearchModalProps) {
   const { products, categories } = useProducts();
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(initialQuery);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const results = query.trim().length > 0
@@ -23,14 +23,10 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
       )
     : [];
 
-  // Focus input when modal opens
   useEffect(() => {
-    if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 100);
-    } else {
-      setQuery('');
-    }
-  }, [isOpen]);
+    const focusTimeout = window.setTimeout(() => inputRef.current?.focus(), 100);
+    return () => window.clearTimeout(focusTimeout);
+  }, []);
 
   // Close on Escape
   useEffect(() => {
@@ -40,8 +36,6 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, [onClose]);
-
-  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4">

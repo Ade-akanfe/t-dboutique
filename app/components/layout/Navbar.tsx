@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, type FormEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { ShoppingBag, Search, Menu, X, ShieldCheck } from "lucide-react";
+import { ShoppingBag, Search, Menu, X, ShieldCheck, UserRound } from "lucide-react";
 import CartDrawer from "../cart/CartDrawer";
 import SearchModal from "../search/SearchModal";
+import { useAuth } from "../../context/AuthContext";
 
 const navLinks = [
   { label: "New Arrivals", href: "/#new-arrivals" },
@@ -16,6 +17,7 @@ const navLinks = [
   { label: "Categories", href: "/#categories" },
   { label: "About", href: "/#about" },
   { label: "Contact", href: "/#contact" },
+  { label: "Orders", href: "/account#orders" },
 ];
 
 export default function Navbar() {
@@ -23,7 +25,9 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const pathname = usePathname();
+  const { isAuthenticated } = useAuth();
 
   const cartCount = useSelector((state: RootState) =>
     state.cart.items.reduce((sum, item) => sum + item.quantity, 0)
@@ -83,7 +87,9 @@ export default function Navbar() {
 
   return (
     <>
-      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      {searchOpen && (
+        <SearchModal initialQuery={searchQuery} onClose={() => setSearchOpen(false)} />
+      )}
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
       {/* Fixed Header with smooth GPU-accelerated background and shadow transitions */}
@@ -95,31 +101,32 @@ export default function Navbar() {
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-12 relative">
+          <div className="flex justify-between items-center min-h-20 relative">
             
             {/* Brand Logo */}
             <Link
               href="/"
-              className="flex-shrink-0 flex items-center gap-3 group transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]"
+              aria-label="T&D Ladies Fashion home"
+              className="flex-shrink-0 flex items-center group transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]"
             >
               <Image
                 src="/logo.png"
-                alt="T&D Fashion Trend Logo"
-                width={50}
-                height={50}
+                alt="T&D Ladies Fashion Logo"
+                width={112}
+                height={95}
                 priority
-                style={{ width: 'auto', height: 'auto' }}
-                className="object-contain mix-blend-multiply max-h-12 w-auto"
+                className="h-[4.5rem] w-auto object-contain sm:h-20"
               />
-              <span
-                className="font-playfair text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 whitespace-nowrap"
-              >
-                T&D <span className="font-light italic" style={{ color: '#D4AF37' }}>Trend</span>
+              <span className="hidden flex-col pl-3 font-playfair tracking-tight text-zinc-900 sm:flex">
+                <span className="text-xl font-bold md:text-2xl">T and D</span>
+                <span className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-600 md:text-sm">
+                  Ladies Fashion
+                </span>
               </span>
             </Link>
 
             {/* Desktop Navigation Links */}
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="hidden lg:flex items-center space-x-8">
               {navLinks.map((link) => (
                 <Link
                   key={link.label}
@@ -137,7 +144,15 @@ export default function Navbar() {
             </nav>
 
             {/* Desktop Actions (Admin, Search, Cart) */}
-            <div className="hidden md:flex items-center space-x-5">
+            <div className="hidden lg:flex items-center space-x-5">
+              <Link
+                href="/account"
+                aria-label={isAuthenticated ? "My account and orders" : "Sign in or view your orders"}
+                title={isAuthenticated ? "My account and orders" : "Sign in"}
+                className="p-2 rounded-full text-zinc-700 hover:text-zinc-950 hover:bg-zinc-100/80 transition-all duration-150"
+              >
+                <UserRound className="w-5 h-5" />
+              </Link>
               <button
                 onClick={() => setSearchOpen(true)}
                 aria-label="Search Catalog"
@@ -164,15 +179,7 @@ export default function Navbar() {
             </div>
 
             {/* Mobile Actions: Search, Cart, Toggle */}
-            <div className="flex md:hidden items-center gap-2">
-              <button
-                onClick={() => setSearchOpen(true)}
-                aria-label="Search"
-                className="p-2 text-zinc-800"
-              >
-                <Search className="w-5 h-5" />
-              </button>
-
+            <div className="flex lg:hidden items-center gap-2">
               <button
                 onClick={() => setCartOpen(true)}
                 aria-label="Cart"
@@ -203,11 +210,38 @@ export default function Navbar() {
 
         {/* Mobile Dropdown Menu with smooth transition */}
         <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out border-t border-zinc-100 bg-white/95 backdrop-blur-xl ${
-            isOpen ? "max-h-96 opacity-100 py-4 shadow-xl" : "max-h-0 opacity-0 py-0"
+          className={`lg:hidden overflow-y-auto transition-all duration-300 ease-in-out border-t border-zinc-100 bg-white/95 backdrop-blur-xl ${
+            isOpen ? "max-h-[80vh] opacity-100 py-4 shadow-xl" : "max-h-0 overflow-hidden opacity-0 py-0"
           }`}
         >
           <div className="px-6 space-y-3">
+            <form
+              role="search"
+              onSubmit={(event: FormEvent<HTMLFormElement>) => {
+                event.preventDefault();
+                setIsOpen(false);
+                setSearchOpen(true);
+              }}
+              className="mb-2 flex items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 py-2"
+            >
+              <Search className="h-4 w-4 shrink-0 text-zinc-500" aria-hidden="true" />
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search products"
+                aria-label="Search products"
+                className="min-w-0 flex-1 bg-transparent text-sm text-zinc-900 outline-none placeholder:text-zinc-400"
+              />
+              <button
+                type="submit"
+                aria-label="Search products"
+                title="Search products"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
+              >
+                <Search className="h-5 w-5" aria-hidden="true" />
+              </button>
+            </form>
             {navLinks.map((link) => (
               <Link
                 key={link.label}
@@ -220,6 +254,14 @@ export default function Navbar() {
             ))}
 
             <div className="pt-3 border-t border-zinc-100">
+              <Link
+                href="/account"
+                onClick={() => setIsOpen(false)}
+                className="mb-3 flex items-center gap-2 py-1.5 text-base font-semibold text-zinc-900 hover:text-zinc-600"
+              >
+                <UserRound className="h-4 w-4" />
+                {isAuthenticated ? "My Account" : "Sign In"}
+              </Link>
               <Link
                 href="/admin"
                 onClick={() => setIsOpen(false)}

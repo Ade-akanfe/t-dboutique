@@ -15,6 +15,11 @@
   --gold-700: #7d6232;
   --gold-800: #5c4722;
   --gold-900: #3d2f14;
+
+  /* Purple accent drawn from the T&D logo */
+  --brand-purple: #6b21a8;
+  --brand-purple-light: #c084fc;
+  --brand-purple-dark: #4c1d95;
 }
 
 @theme inline {
@@ -35,6 +40,10 @@
   --color-gold-700: var(--gold-700);
   --color-gold-800: var(--gold-800);
   --color-gold-900: var(--gold-900);
+
+  --color-brand-purple: var(--brand-purple);
+  --color-brand-purple-light: var(--brand-purple-light);
+  --color-brand-purple-dark: var(--brand-purple-dark);
 }
 
 html {

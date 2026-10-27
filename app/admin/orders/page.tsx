@@ -15,14 +15,15 @@ import {
   Truck,
   XCircle,
   ShoppingBag,
-  User,
   Mail,
   Phone,
   MapPin,
+  X,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+type PaymentStatus = 'pending' | 'submitted' | 'verified';
 
 interface OrderItem {
   id: string;
@@ -41,8 +42,10 @@ interface Order {
   customer_email: string;
   customer_phone: string | null;
   customer_address: string | null;
+  postal_code: string | null;
   total_amount: number;
   status: OrderStatus;
+  payment_status: PaymentStatus;
   notes: string | null;
   created_at: string;
   updated_at: string;
@@ -68,6 +71,7 @@ function OrdersPageInner() {
     const { data, error } = await supabase
       .from('orders')
       .select('*, order_items(*)')
+      .neq('payment_status', 'pending')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -85,20 +89,54 @@ function OrdersPageInner() {
 
   const updateStatus = async (orderId: string, newStatus: OrderStatus) => {
     setUpdatingStatus(orderId);
-    const { error } = await supabase
-      .from('orders')
-      .update({ status: newStatus })
-      .eq('id', orderId);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error('Your admin session has expired. Please sign in again.');
+        return;
+      }
 
-    if (error) {
-      toast.error('Failed to update order status.');
-    } else {
+      const response = await fetch('/api/admin/orders/status', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ orderId, status: newStatus }),
+      });
+      const result = await response.json() as {
+        error?: string;
+        notificationSent?: boolean;
+        notificationError?: string;
+      };
+
+      if (!response.ok) {
+        toast.error(result.error ?? 'Failed to update order status.');
+        return;
+      }
+
       setOrders((prev) =>
-        prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
+        prev.map((order) =>
+          order.id === orderId
+            ? {
+                ...order,
+                status: newStatus,
+                payment_status: newStatus === 'confirmed' ? 'verified' : order.payment_status,
+              }
+            : order
+        )
       );
-      toast.success(`Order status updated to ${newStatus}.`, { icon: '✅' });
+      if (result.notificationSent === false) {
+        toast.error(result.notificationError ?? 'Order updated, but the customer email could not be sent.');
+      } else {
+        toast.success(`Order status updated to ${newStatus}.`, { icon: '✅' });
+      }
+    } catch (error) {
+      console.error('Failed to update order status:', error);
+      toast.error('Failed to update order status. Please try again.');
+    } finally {
+      setUpdatingStatus(null);
     }
-    setUpdatingStatus(null);
   };
 
   const formatDate = (iso: string) =>
@@ -169,8 +207,8 @@ function OrdersPageInner() {
         ) : orders.length === 0 ? (
           <div className="text-center py-20">
             <Package className="w-12 h-12 text-zinc-700 mx-auto mb-4" />
-            <p className="text-zinc-400 font-medium">No orders yet</p>
-            <p className="text-zinc-600 text-sm mt-1">Orders placed by customers will appear here.</p>
+            <p className="text-zinc-400 font-medium">No payment confirmations yet</p>
+            <p className="text-zinc-600 text-sm mt-1">Orders appear here after customers confirm their bank transfer.</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -191,6 +229,15 @@ function OrdersPageInner() {
                         >
                           {cfg.icon}
                           {cfg.label}
+                        </span>
+                        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${
+                          order.payment_status === 'verified'
+                            ? 'bg-emerald-900/50 text-emerald-300'
+                            : order.payment_status === 'submitted'
+                              ? 'bg-amber-900/50 text-amber-300'
+                              : 'bg-zinc-800 text-zinc-500'
+                        }`}>
+                          Payment {order.payment_status}
                         </span>
                       </div>
                       <p className="font-semibold text-white">{order.customer_name}</p>
@@ -215,7 +262,13 @@ function OrdersPageInner() {
                         className="appearance-none pl-3 pr-8 py-2 rounded-lg border border-zinc-700 bg-zinc-800 text-white text-xs font-medium cursor-pointer focus:outline-none focus:border-yellow-500 disabled:opacity-50"
                       >
                         {(Object.keys(STATUS_CONFIG) as OrderStatus[]).map((s) => (
-                          <option key={s} value={s}>{STATUS_CONFIG[s].label}</option>
+                          <option
+                            key={s}
+                            value={s}
+                            disabled={s === 'confirmed' && order.payment_status === 'pending'}
+                          >
+                            {STATUS_CONFIG[s].label}
+                          </option>
                         ))}
                       </select>
                       <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-400 pointer-events-none" />
@@ -231,59 +284,84 @@ function OrdersPageInner() {
                     </button>
                   </div>
 
-                  {/* Expanded Details */}
-                  {isExpanded && (
-                    <div className="border-t border-zinc-800 p-5 space-y-4 bg-zinc-950/50">
-                      {/* Address */}
-                      {order.customer_address && (
-                        <div className="flex items-start gap-2 text-sm text-zinc-400">
-                          <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: '#D4AF37' }} />
-                          <span>{order.customer_address}</span>
-                        </div>
-                      )}
-                      {order.notes && (
-                        <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-sm text-zinc-400">
-                          <span className="text-zinc-500 font-medium">Note: </span>{order.notes}
-                        </div>
-                      )}
-
-                      {/* Order Items */}
-                      {order.order_items && order.order_items.length > 0 && (
-                        <div>
-                          <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Items</p>
-                          <div className="space-y-2">
-                            {order.order_items.map((item) => (
-                              <div key={item.id} className="flex items-center gap-3 bg-zinc-900 rounded-lg p-3 border border-zinc-800">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={item.product_image} alt={item.product_name} className="w-12 h-12 rounded-lg object-cover bg-zinc-800 flex-shrink-0" />
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-sm font-medium text-white truncate">{item.product_name}</p>
-                                  <div className="flex items-center gap-2 text-xs text-zinc-500">
-                                    {item.size && <span>Size: {item.size}</span>}
-                                    {item.color && <span>Color: {item.color}</span>}
-                                    <span>Qty: {item.quantity}</span>
-                                  </div>
-                                </div>
-                                <p className="text-sm font-bold text-white">{formatAmount(item.price * item.quantity)}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Total */}
-                      <div className="flex justify-end items-center gap-2 border-t border-zinc-800 pt-3">
-                        <span className="text-sm text-zinc-500">Total</span>
-                        <span className="text-lg font-bold" style={{ color: '#D4AF37' }}>{formatAmount(order.total_amount)}</span>
-                      </div>
-                    </div>
-                  )}
                 </div>
               );
             })}
           </div>
         )}
       </main>
+      {expandedOrder && (() => {
+        const order = orders.find((item) => item.id === expandedOrder);
+        if (!order) return null;
+
+        return (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+            onClick={() => setExpandedOrder(null)}
+          >
+            <section
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="order-details-title"
+              className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-zinc-700 bg-zinc-900 p-5 shadow-2xl sm:p-7"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <header className="mb-6 flex items-start justify-between gap-4 border-b border-zinc-800 pb-4">
+                <div>
+                  <h2 id="order-details-title" className="text-lg font-bold text-white">Order details</h2>
+                  <p className="mt-1 font-mono text-xs text-zinc-500">#{order.id.slice(0, 8).toUpperCase()} · {formatDate(order.created_at)}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setExpandedOrder(null)}
+                  aria-label="Close order details"
+                  className="rounded-lg p-2 text-zinc-400 hover:bg-zinc-800 hover:text-white"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </header>
+
+              <dl className="grid gap-4 text-sm sm:grid-cols-2">
+                <div><dt className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Customer name</dt><dd className="mt-1 text-white">{order.customer_name}</dd></div>
+                <div><dt className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Email address</dt><dd className="mt-1 break-all text-white">{order.customer_email}</dd></div>
+                <div><dt className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Phone number</dt><dd className="mt-1 text-white">{order.customer_phone || 'Not provided'}</dd></div>
+                <div><dt className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Postal code</dt><dd className="mt-1 text-white">{order.postal_code || 'Not provided'}</dd></div>
+                <div className="sm:col-span-2">
+                  <dt className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-zinc-500"><MapPin className="h-3.5 w-3.5" /> Dispatch address</dt>
+                  <dd className="mt-1 whitespace-pre-wrap text-white">{order.customer_address || 'Not provided'}</dd>
+                </div>
+                <div className="sm:col-span-2">
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Delivery notes</dt>
+                  <dd className="mt-1 whitespace-pre-wrap text-white">{order.notes || 'No notes provided'}</dd>
+                </div>
+              </dl>
+
+              <div className="mt-6 border-t border-zinc-800 pt-5">
+                <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-zinc-500">Order items</h3>
+                <div className="space-y-2">
+                  {(order.order_items ?? []).map((item) => (
+                    <div key={item.id} className="flex items-center gap-3 rounded-lg border border-zinc-800 bg-zinc-950 p-3">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={item.product_image} alt={item.product_name} className="h-12 w-12 shrink-0 rounded-lg bg-zinc-800 object-cover" />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium text-white">{item.product_name}</p>
+                        <p className="mt-1 text-xs text-zinc-500">
+                          {[item.size && `Size: ${item.size}`, item.color && `Color: ${item.color}`, `Qty: ${item.quantity}`].filter(Boolean).join(' · ')}
+                        </p>
+                      </div>
+                      <p className="shrink-0 text-sm font-bold text-white">{formatAmount(item.price * item.quantity)}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 flex justify-between border-t border-zinc-800 pt-4">
+                  <span className="text-sm text-zinc-400">Total</span>
+                  <span className="text-lg font-bold" style={{ color: '#D4AF37' }}>{formatAmount(order.total_amount)}</span>
+                </div>
+              </div>
+            </section>
+          </div>
+        );
+      })()}
     </div>
   );
 }

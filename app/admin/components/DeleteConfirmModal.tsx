@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { AlertTriangle, X } from 'lucide-react';
-import { Product } from '../../categories/[slug]/categoryData';
+import type { Product } from '../../lib/productTypes';
 
 interface DeleteConfirmModalProps {
   isOpen: boolean;

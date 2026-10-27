@@ -3,13 +3,12 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Sparkles, Plus, FolderPlus, RotateCcw, ExternalLink, Package, Layers, TrendingUp, LogOut } from 'lucide-react';
+import { Sparkles, Plus, FolderPlus, ExternalLink, Package, Layers, TrendingUp, LogOut } from 'lucide-react';
 import { useProducts } from '../../context/ProductContext';
 
 interface AdminHeaderProps {
   onOpenProductModal: () => void;
   onOpenCategoryModal: () => void;
-  onResetCatalog: () => void;
   userEmail?: string;
   onSignOut: () => void;
 }
@@ -17,7 +16,6 @@ interface AdminHeaderProps {
 export default function AdminHeader({
   onOpenProductModal,
   onOpenCategoryModal,
-  onResetCatalog,
   userEmail,
   onSignOut,
 }: AdminHeaderProps) {
@@ -32,16 +30,13 @@ export default function AdminHeader({
       <div className="relative mx-auto max-w-7xl space-y-7">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
           <div className="flex items-center gap-4">
-            <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-zinc-700/70 bg-zinc-900 p-2 shadow-inner">
-              <Image
-                src="/logo.png"
-                alt="T&D Boutique"
-                width={36}
-                height={36}
-                style={{ width: 'auto', height: 'auto' }}
-                className="object-contain filter invert opacity-90"
-              />
-            </div>
+            <Image
+              src="/logo.png"
+              alt="T&D Ladies Fashion"
+              width={112}
+              height={95}
+              className="h-20 w-auto shrink-0 object-contain"
+            />
             <div className="min-w-0">
               <div className="mb-1 flex flex-wrap items-center gap-2">
                 <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-zinc-500">Store operations</span>
@@ -49,8 +44,8 @@ export default function AdminHeader({
                 <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-400">Live</span>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="font-playfair text-2xl font-bold tracking-tight text-white sm:text-3xl">T&amp;D Boutique</h1>
-                <span className="rounded-full border border-gold-500/30 bg-gold-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider" style={{ color: '#D4AF37' }}>Admin</span>
+                <h1 className="font-playfair text-2xl font-bold tracking-tight text-white sm:text-3xl">T&amp;D Ladies Fashion</h1>
+                <span className="rounded-full border border-purple-400/30 bg-purple-400/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-300">Admin</span>
               </div>
               <p className="mt-1 text-xs text-zinc-400 sm:text-sm">Manage products, categories, and the visual storefront.</p>
             </div>
@@ -88,15 +83,6 @@ export default function AdminHeader({
               <Package className="w-3.5 h-3.5" style={{ color: '#D4AF37' }} />
               Orders
             </Link>
-
-            <button
-              onClick={onResetCatalog}
-              title="Reset catalog to the imported catalog"
-              className="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/80 px-3.5 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-400 transition-all hover:border-rose-900/50 hover:bg-rose-950/20 hover:text-rose-400"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              Reset Catalog
-            </button>
 
             <button
               onClick={onOpenCategoryModal}

@@ -93,29 +93,21 @@ export default function AdminLoginPage() {
 
           {/* Header */}
           <div className="flex flex-col items-center mb-8">
-            <div className="relative mb-4">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center border border-zinc-700"
-                style={{ background: 'linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)' }}>
-                <Image
-                  src="/logo.png"
-                  alt="T&D Boutique Logo"
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                />
-              </div>
-              {/* Gold ring pulse */}
-              <div className="absolute inset-0 rounded-full animate-ping opacity-20"
-                style={{ border: '2px solid #D4AF37', animationDuration: '3s' }} />
-            </div>
+            <Image
+              src="/logo.png"
+              alt="T&D Ladies Fashion Logo"
+              width={168}
+              height={142}
+              className="mb-4 h-32 w-auto object-contain"
+            />
 
             <div className="flex items-center gap-2 mb-1">
-              <ShieldCheck className="w-4 h-4" style={{ color: '#D4AF37' }} />
-              <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#D4AF37' }}>
+              <ShieldCheck className="w-4 h-4" style={{ color: 'var(--brand-purple-light)' }} />
+              <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--brand-purple-light)' }}>
                 Admin Portal
               </span>
             </div>
-            <h1 className="text-2xl font-bold text-white font-playfair">T&D Boutique</h1>
+            <h1 className="text-2xl font-bold text-white font-playfair">T&amp;D Ladies Fashion</h1>
             <p className="text-zinc-400 text-sm mt-1">Sign in to manage your store</p>
           </div>
 
@@ -214,7 +206,7 @@ export default function AdminLoginPage() {
           <div className="mt-8 pt-6 border-t border-zinc-800 flex items-center justify-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5" style={{ color: '#D4AF37' }} />
             <span className="text-xs text-zinc-500">
-              T&D Boutique Admin — Secure Access
+              T&amp;D Ladies Fashion Admin — Secure Access
             </span>
           </div>
 

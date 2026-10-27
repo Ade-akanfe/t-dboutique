@@ -3,36 +3,12 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { toCloudinaryImageUrl } from '../lib/cloudinaryImages';
-import { ALL_PRODUCTS, CATEGORIES, parseSizes } from '../categories/[slug]/categoryData';
+import { parseSizes } from '../lib/productSizes';
+import type { CategoryInfo, Product } from '../lib/productTypes';
+
+export type { CategoryInfo, Product } from '../lib/productTypes';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-
-export interface Product {
-  id: number | string;
-  slug: string;
-  name: string;
-  price: string;
-  rawPrice: number;
-  image: string;
-  gallery?: string[];
-  category: string;
-  categorySlug: string;
-  badge?: string;
-  isNew?: boolean;
-  description?: string;
-  details?: string[];
-  sizes?: string[];
-  colors?: string[];
-  fabric?: string;
-  createdAt?: string;
-}
-
-export interface CategoryInfo {
-  name: string;
-  slug: string;
-  description: string;
-  bannerImage: string;
-}
 
 // ─── DB row → app type converters ────────────────────────────────────────────
 
@@ -80,7 +56,6 @@ interface ProductContextType {
   deleteProduct: (id: string | number) => Promise<boolean>;
   addCategory: (categoryData: CategoryInfo) => Promise<boolean>;
   deleteCategory: (slug: string) => Promise<boolean>;
-  resetCatalog: () => Promise<boolean>;
   getProductBySlug: (slug: string) => Product | undefined;
   getProductsByCategory: (categorySlug: string) => Product[];
   refreshProducts: () => Promise<void>;
@@ -92,8 +67,8 @@ const ProductContext = createContext<ProductContextType | undefined>(undefined);
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function ProductProvider({ children }: { children: React.ReactNode }) {
-  const [products, setProducts] = useState<Product[]>(ALL_PRODUCTS);
-  const [categories, setCategories] = useState<CategoryInfo[]>(CATEGORIES);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<CategoryInfo[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   // ── Fetch products from Supabase ───────────────────────────────────────────
@@ -105,19 +80,9 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
 
     if (error) {
       console.error('Failed to load products from Supabase:', error.message);
-      setProducts(ALL_PRODUCTS);
-    } else if (data && data.length > 0) {
-      const databaseProducts = data.map(rowToProduct);
-      
-      // Merge with static data using a Map to avoid duplicates by slug
-      const productsBySlug = new Map(ALL_PRODUCTS.map((product) => [product.slug, product]));
-      databaseProducts.forEach((product) => {
-        productsBySlug.set(product.slug, product);
-      });
-      
-      setProducts(Array.from(productsBySlug.values()));
+      setProducts([]);
     } else {
-      setProducts(ALL_PRODUCTS);
+      setProducts((data ?? []).map(rowToProduct));
     }
   }, []);
 
@@ -130,22 +95,31 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
 
     if (error) {
       console.error('Failed to load categories from Supabase:', error.message);
-      setCategories(CATEGORIES);
+      setCategories([]);
     } else if (data && data.length > 0) {
-      const dbCategories = data.map(rowToCategory);
-      const catMap = new Map(CATEGORIES.map((c) => [c.slug, c]));
-      dbCategories.forEach((c) => catMap.set(c.slug, c));
-      setCategories(Array.from(catMap.values()));
+      setCategories(data.map(rowToCategory));
     } else {
-      setCategories(CATEGORIES);
+      setCategories([]);
     }
   }, []);
 
   // Initial load
   useEffect(() => {
-    Promise.all([refreshProducts(), refreshCategories()]).finally(() =>
-      setIsLoaded(true)
-    );
+    let active = true;
+    const loadCatalog = async () => {
+      try {
+        await Promise.all([refreshProducts(), refreshCategories()]);
+      } catch (error) {
+        console.error('Failed to initialize the Supabase catalog:', error);
+      } finally {
+        if (active) setIsLoaded(true);
+      }
+    };
+
+    void loadCatalog();
+    return () => {
+      active = false;
+    };
   }, [refreshProducts, refreshCategories]);
 
   // ── CRUD — Products ────────────────────────────────────────────────────────
@@ -207,46 +181,6 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
 
   const updateProduct = useCallback(
     async (id: string | number, updatedData: Partial<Product>): Promise<boolean> => {
-      // Promote a static fallback product to a real Supabase row on first edit.
-      if (typeof id === 'number') {
-        const currentProduct = products.find((p) => String(p.id) === String(id));
-        if (!currentProduct) return false;
-
-        const product = { ...currentProduct, ...updatedData };
-        const row = {
-          slug: product.slug,
-          name: product.name,
-          price: product.price,
-          raw_price: product.rawPrice,
-          image: product.image,
-          gallery: product.gallery ?? [],
-          category: product.category,
-          category_slug: product.categorySlug,
-          badge: product.badge ?? null,
-          is_new: product.isNew ?? false,
-          description: product.description ?? null,
-          details: product.details ?? [],
-          sizes: product.sizes ?? [],
-          colors: product.colors ?? [],
-          fabric: product.fabric ?? null,
-        };
-
-        const { data, error } = await supabase
-          .from('products')
-          .upsert(row, { onConflict: 'slug' })
-          .select()
-          .single();
-
-        if (error || !data) {
-          console.error('Failed to save fallback product:', error?.message);
-          return false;
-        }
-
-        const savedProduct = rowToProduct(data);
-        setProducts((prev) => prev.map((p) => (String(p.id) === String(id) ? savedProduct : p)));
-        return true;
-      }
-
       const updateRow: Record<string, unknown> = {};
       if (updatedData.name !== undefined) updateRow.name = updatedData.name;
       if (updatedData.slug !== undefined) updateRow.slug = updatedData.slug;
@@ -281,7 +215,7 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
       );
       return true;
     },
-    [products]
+    []
   );
 
   const deleteProduct = useCallback(async (id: string | number): Promise<boolean> => {
@@ -340,69 +274,6 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
     return true;
   }, []);
 
-  // ── Reset (re-seed from static data) ──────────────────────────────────────
-
-  const resetCatalog = useCallback(async (): Promise<boolean> => {
-    const { error: productDeleteError } = await supabase
-      .from('products')
-      .delete()
-      .neq('id', '00000000-0000-0000-0000-000000000000');
-    if (productDeleteError) {
-      console.error('Failed to delete products during catalog reset:', productDeleteError.message);
-      return false;
-    }
-
-    const { error: categoryDeleteError } = await supabase
-      .from('categories')
-      .delete()
-      .neq('id', '00000000-0000-0000-0000-000000000000');
-    if (categoryDeleteError) {
-      console.error('Failed to delete categories during catalog reset:', categoryDeleteError.message);
-      return false;
-    }
-
-    // Re-insert default categories
-    const catRows = CATEGORIES.map((c) => ({
-      name: c.name,
-      slug: c.slug,
-      description: c.description,
-      banner_image: c.bannerImage,
-    }));
-    const { error: categoryInsertError } = await supabase.from('categories').insert(catRows);
-    if (categoryInsertError) {
-      console.error('Failed to restore categories during catalog reset:', categoryInsertError.message);
-      return false;
-    }
-
-    // Re-insert default products
-    const productRows = ALL_PRODUCTS.map((p) => ({
-      slug: p.slug,
-      name: p.name,
-      price: p.price,
-      raw_price: p.rawPrice,
-      image: p.image,
-      gallery: p.gallery ?? [],
-      category: p.category,
-      category_slug: p.categorySlug,
-      badge: p.badge ?? null,
-      is_new: p.isNew ?? false,
-      description: p.description ?? null,
-      details: p.details ?? [],
-      sizes: p.sizes ?? [],
-      colors: p.colors ?? [],
-      fabric: p.fabric ?? null,
-    }));
-    const { error: productInsertError } = await supabase.from('products').insert(productRows);
-    if (productInsertError) {
-      console.error('Failed to restore products during catalog reset:', productInsertError.message);
-      return false;
-    }
-
-    setCategories(CATEGORIES);
-    setProducts(ALL_PRODUCTS);
-    return true;
-  }, []);
-
   // ── Query helpers ──────────────────────────────────────────────────────────
 
   const getProductBySlug = useCallback(
@@ -421,11 +292,17 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
     (categorySlug: string): Product[] => {
       const normalized = categorySlug.toLowerCase();
       if (normalized === 'all') return products;
-      return products.filter(
+      return products
+        .filter(
         (p) =>
           p.categorySlug.toLowerCase() === normalized ||
           p.category.toLowerCase().includes(normalized)
-      );
+        )
+        .sort(
+          (a, b) =>
+            (Date.parse(b.createdAt ?? '') || 0) -
+            (Date.parse(a.createdAt ?? '') || 0)
+        );
     },
     [products]
   );
@@ -441,7 +318,6 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
         deleteProduct,
         addCategory,
         deleteCategory,
-        resetCatalog,
         getProductBySlug,
         getProductsByCategory,
         refreshProducts,

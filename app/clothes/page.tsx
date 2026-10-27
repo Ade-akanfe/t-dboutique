@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import CategoryView from '../categories/[slug]/CategoryView';
-import { ALL_PRODUCTS } from '../categories/[slug]/categoryData';
 import { cloudinaryImage } from '../lib/cloudinaryImages';
 
 export const metadata: Metadata = {
@@ -26,11 +25,11 @@ export const metadata: Metadata = {
     canonical: '/clothes',
   },
   openGraph: {
-    title: "Women's Luxury Clothes & Skirts | T&D Fashion Trend Lagos",
+    title: "Women's Luxury Clothes & Skirts | T&D Ladies Fashion Lagos",
     description:
       'Curated skirts, blouses, and designer sets from T&D Collections. Handcrafted luxury with fast delivery in Nigeria and worldwide express shipping.',
     url: '/clothes',
-    siteName: 'T&D Fashion Trend Boutique',
+    siteName: 'T&D Ladies Fashion Boutique',
     locale: 'en_NG',
     type: 'website',
     images: [
@@ -52,10 +51,6 @@ export const metadata: Metadata = {
 };
 
 export default function ClothesPage() {
-  const clothesProducts = ALL_PRODUCTS.filter(
-    (p) => p.categorySlug === 'clothes' || p.category.toLowerCase().includes('cloth')
-  );
-
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': ['CollectionPage', 'ClothingStore'],
@@ -76,23 +71,6 @@ export default function ClothesPage() {
       { '@type': 'Country', name: 'Canada' },
       { '@type': 'Country', name: 'Worldwide' },
     ],
-    hasOfferCatalog: {
-      '@type': 'OfferCatalog',
-      name: "Women's Skirts, Blouses & Clothing",
-      itemListElement: clothesProducts.slice(0, 50).map((p, index) => ({
-        '@type': 'Offer',
-        itemOffered: {
-          '@type': 'Product',
-          name: p.name,
-          image: p.image,
-          description: p.description,
-        },
-        price: p.rawPrice,
-        priceCurrency: 'NGN',
-        availability: 'https://schema.org/InStock',
-        position: index + 1,
-      })),
-    },
   };
 
   return (
@@ -105,7 +83,6 @@ export default function ClothesPage() {
       <div className="bg-zinc-50 pt-28 md:pt-32 pb-20 flex-grow">
         <CategoryView
           currentSlug="clothes"
-          initialProducts={clothesProducts}
           categoryTitle="Clothes (Skirts & Blouses)"
           categoryDescription="Contemporary clothing looks from T&D Collections and selected international designer labels. Doorstep dispatch in Lagos, nationwide delivery across Nigeria & express worldwide shipping."
         />

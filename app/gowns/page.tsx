@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import CategoryView from '../categories/[slug]/CategoryView';
-import { ALL_PRODUCTS } from '../categories/[slug]/categoryData';
 import { cloudinaryImage } from '../lib/cloudinaryImages';
 
 export const metadata: Metadata = {
@@ -27,11 +26,11 @@ export const metadata: Metadata = {
     canonical: '/gowns',
   },
   openGraph: {
-    title: 'Designer Gowns & Luxury Dresses | T&D Fashion Trend Lagos',
+    title: 'Designer Gowns & Luxury Dresses | T&D Ladies Fashion Lagos',
     description:
       'Explore our exclusive gown collection from T&D Collections and international designer labels. Shop from Lagos with express worldwide delivery.',
     url: '/gowns',
-    siteName: 'T&D Fashion Trend Boutique',
+    siteName: 'T&D Ladies Fashion Boutique',
     locale: 'en_NG',
     type: 'website',
     images: [
@@ -53,10 +52,6 @@ export const metadata: Metadata = {
 };
 
 export default function GownsPage() {
-  const gownProducts = ALL_PRODUCTS.filter(
-    (p) => p.categorySlug === 'gowns' || p.category.toLowerCase().includes('gown')
-  );
-
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': ['CollectionPage', 'ClothingStore'],
@@ -77,23 +72,6 @@ export default function GownsPage() {
       { '@type': 'Country', name: 'Canada' },
       { '@type': 'Country', name: 'Worldwide' },
     ],
-    hasOfferCatalog: {
-      '@type': 'OfferCatalog',
-      name: 'Gowns and Evening Dresses',
-      itemListElement: gownProducts.map((p, index) => ({
-        '@type': 'Offer',
-        itemOffered: {
-          '@type': 'Product',
-          name: p.name,
-          image: p.image,
-          description: p.description,
-        },
-        price: p.rawPrice,
-        priceCurrency: 'NGN',
-        availability: 'https://schema.org/InStock',
-        position: index + 1,
-      })),
-    },
   };
 
   return (
@@ -106,7 +84,6 @@ export default function GownsPage() {
       <div className="bg-zinc-50 pt-28 md:pt-32 pb-20 flex-grow">
         <CategoryView
           currentSlug="gowns"
-          initialProducts={gownProducts}
           categoryTitle="Designer Gowns"
           categoryDescription="Exquisite gown collections celebrating modern elegance, red carpet glam, and contemporary Nigerian couture. Fast doorstep delivery across Nigeria & express worldwide shipping."
         />

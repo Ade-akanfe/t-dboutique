@@ -69,7 +69,7 @@ CREATE POLICY "Admins can read all profiles"
   USING (public.is_admin());
 
 -- Replace the initial schema's authenticated-only write policies with
--- admin-only policies. Public order inserts remain available below.
+-- admin-only policies. Order creation is handled by server routes.
 DROP POLICY IF EXISTS "Authenticated write categories" ON public.categories;
 DROP POLICY IF EXISTS "Admins can manage categories" ON public.categories;
 CREATE POLICY "Admins can manage categories"
@@ -87,6 +87,7 @@ CREATE POLICY "Admins can manage products"
   WITH CHECK (public.is_admin());
 
 DROP POLICY IF EXISTS "Authenticated manage orders" ON public.orders;
+DROP POLICY IF EXISTS "Anyone can insert orders" ON public.orders;
 DROP POLICY IF EXISTS "Admins can manage orders" ON public.orders;
 CREATE POLICY "Admins can manage orders"
   ON public.orders FOR ALL
@@ -95,6 +96,7 @@ CREATE POLICY "Admins can manage orders"
   WITH CHECK (public.is_admin());
 
 DROP POLICY IF EXISTS "Authenticated manage order items" ON public.order_items;
+DROP POLICY IF EXISTS "Anyone can insert order items" ON public.order_items;
 DROP POLICY IF EXISTS "Admins can manage order items" ON public.order_items;
 CREATE POLICY "Admins can manage order items"
   ON public.order_items FOR ALL

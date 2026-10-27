@@ -1,21 +1,20 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
-import Image from 'next/image';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../store/features/cartSlice';
 import toast from 'react-hot-toast';
-import { Product, parseSizes } from '../../categories/[slug]/categoryData';
-import { ShoppingBag, MessageSquare, Check, ShieldCheck, Truck, Sparkles, ChevronRight, ChevronLeft, Minus, Plus, Maximize2, X } from 'lucide-react';
+import type { Product } from '../../lib/productTypes';
+import { parseSizes } from '../../lib/productSizes';
+import { ShoppingBag, MessageSquare, ShieldCheck, Truck, ChevronRight, ChevronLeft, Minus, Plus, Maximize2, X } from 'lucide-react';
 import { useProducts } from '../../context/ProductContext';
+import { cleanProductDescription, cleanProductDetails, cleanProductFabric } from '../../lib/productCopy';
 
 interface ProductDetailViewProps {
   product: Product;
   relatedProducts: Product[];
 }
-
-const defaultViewLabels = ['Front View', 'Side Angle', 'Back Silhouette', 'Full Length', 'Fabric Detail'];
 
 export default function ProductDetailView({ product: initialProduct, relatedProducts: initialRelated }: ProductDetailViewProps) {
   const dispatch = useDispatch();
@@ -44,28 +43,38 @@ export default function ProductDetailView({ product: initialProduct, relatedProd
     : [product.image];
 
   const productSizes = useMemo(() => {
-    return (product.sizes ?? []).flatMap((s) => parseSizes(s));
-  }, [product.sizes]);
+    return product.categorySlug === 'bags'
+      ? []
+      : (product.sizes ?? []).flatMap((s) => parseSizes(s));
+  }, [product.categorySlug, product.sizes]);
+  const hasColorOptions = product.categorySlug !== 'bags' && Boolean(product.colors?.length);
+  const productDetails = cleanProductDetails(product.details);
+  const productFabric = cleanProductFabric(product.fabric);
+  const productDescription = cleanProductDescription(product.description, product.name);
+  const hasProductDetails = Boolean(productDetails.length || productFabric);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState(images[0] || product.image);
   const [selectedSize, setSelectedSize] = useState(() => {
+    if (product.categorySlug === 'bags') return '';
     const parsed = (product.sizes ?? []).flatMap((s) => parseSizes(s));
-    return parsed.length > 0 ? parsed[0] : 'Standard';
+    return parsed[0] || '';
   });
-  const [selectedColor, setSelectedColor] = useState(product.colors ? product.colors[0] : 'Default');
+  const [selectedColor, setSelectedColor] = useState(product.colors?.[0] || '');
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<'details' | 'sizing' | 'delivery'>('details');
-  const [isFullscreen, setIsFullscreen] = useState(false);
-
-  // Sync selectedSize if product sizes change
-  useEffect(() => {
-    if (productSizes.length > 0 && !productSizes.includes(selectedSize)) {
-      setSelectedSize(productSizes[0]);
+  const [activeTab, setActiveTab] = useState<'details' | 'sizing' | 'delivery'>(() => {
+    if (cleanProductDetails(initialProduct.details).length || cleanProductFabric(initialProduct.fabric)) {
+      return 'details';
     }
-  }, [productSizes, selectedSize]);
-
-  const viewLabels = defaultViewLabels;
+    return initialProduct.categorySlug !== 'bags' && initialProduct.sizes?.length ? 'sizing' : 'delivery';
+  });
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const visibleActiveTab = activeTab === 'details' && !hasProductDetails
+    ? productSizes.length > 0 ? 'sizing' : 'delivery'
+    : activeTab === 'sizing' && productSizes.length === 0
+      ? hasProductDetails ? 'details' : 'delivery'
+      : activeTab;
+  const activeSize = productSizes.includes(selectedSize) ? selectedSize : productSizes[0] || '';
 
   const handleNextImage = () => {
     const nextIdx = (currentIndex + 1) % images.length;
@@ -80,15 +89,23 @@ export default function ProductDetailView({ product: initialProduct, relatedProd
   };
 
   const handleAddToCart = () => {
-    // Add multiple quantities to Redux cart
+    const hasSizeOptions = productSizes.length > 0;
+    const variantLabel = [hasSizeOptions && activeSize, hasColorOptions && selectedColor]
+      .filter(Boolean)
+      .join('-');
+
     for (let i = 0; i < quantity; i++) {
       dispatch(
         addToCart({
-          id: `${product.id}-${selectedSize}-${selectedColor}`,
-          name: `${product.name} (${selectedSize})`,
+          id: variantLabel ? `${product.id}-${variantLabel}` : product.id,
+          productId: product.id,
+          slug: product.slug,
+          name: variantLabel ? `${product.name} (${variantLabel.replace('-', ', ')})` : product.name,
           price: product.price,
           image: selectedImage,
           category: product.category,
+          ...(hasSizeOptions ? { size: activeSize } : {}),
+          ...(hasColorOptions ? { color: selectedColor } : {}),
         })
       );
     }
@@ -100,23 +117,27 @@ export default function ProductDetailView({ product: initialProduct, relatedProd
 
   const productPageUrl = `/products/${product.slug}`;
 
-  const detailsList = product.details && product.details.length > 0
-    ? product.details.map((d) => `  • ${d}`).join('\n')
-    : '  • Premium boutique craftsmanship';
-
   const whatsappMessage = encodeURIComponent(
-    `🛍️ *Order Inquiry — T&D Boutique*\n\n` +
-    `*Item:* ${product.name}\n` +
-    `*Category:* ${product.category}\n` +
-    `*Price:* ${product.price}\n` +
-    `*Size:* ${selectedSize}\n` +
-    `*Colour:* ${selectedColor}\n` +
-    `*Quantity:* ${quantity}\n\n` +
-    `*Details:*\n${detailsList}\n` +
-    (product.fabric ? `*Fabric:* ${product.fabric}\n` : '') +
-    `\n*Product Image:*\n${selectedImage}\n\n` +
-    `*View Product Page:*\n${productPageUrl}\n\n` +
-    `Please confirm availability and delivery timeline. Thank you! 🙏`
+    [
+      '🛍️ *Order Inquiry — T&D Boutique*',
+      '',
+      `*Item:* ${product.name}`,
+      `*Category:* ${product.category}`,
+      `*Price:* ${product.price}`,
+      ...(productSizes.length > 0 ? [`*Size:* ${activeSize}`] : []),
+      ...(hasColorOptions ? [`*Colour:* ${selectedColor}`] : []),
+      `*Quantity:* ${quantity}`,
+      ...(productDetails.length > 0 ? ['', `*Details:*\n${productDetails.map((detail) => `• ${detail}`).join('\n')}`] : []),
+      ...(productFabric ? [`*Fabric:* ${productFabric}`] : []),
+      '',
+      '*Product Image:*',
+      selectedImage,
+      '',
+      '*View Product Page:*',
+      productPageUrl,
+      '',
+      'Please confirm availability and delivery timeline. Thank you! 🙏',
+    ].join('\n')
   );
 
   return (
@@ -146,7 +167,7 @@ export default function ProductDetailView({ product: initialProduct, relatedProd
             <img
               src={selectedImage}
               alt={`${product.name} - View ${currentIndex + 1}`}
-              className="object-cover w-full h-full transition-all duration-500 ease-out"
+              className="object-contain object-center w-full h-full scale-[1.08] transition-all duration-500 ease-out"
             />
 
             {/* Badge */}
@@ -162,7 +183,7 @@ export default function ProductDetailView({ product: initialProduct, relatedProd
             {/* Angle & Index Indicator */}
             <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
               <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-black/60 text-white backdrop-blur-md">
-                {viewLabels[currentIndex] || `View ${currentIndex + 1}`}
+                Image
               </span>
               <span className="px-2 py-1 rounded-full text-[11px] font-bold bg-white/90 text-zinc-900 backdrop-blur-md shadow-sm">
                 {currentIndex + 1} / {images.length}
@@ -269,20 +290,20 @@ export default function ProductDetailView({ product: initialProduct, relatedProd
           </div>
 
           {/* Short Description */}
-          {product.description && (
+          {productDescription && (
             <p className="text-zinc-600 text-sm leading-relaxed mb-6 font-inter">
-              {product.description}
+              {productDescription}
             </p>
           )}
 
           {/* Color Selector */}
-          {product.colors && product.colors.length > 0 && (
+          {hasColorOptions && (
             <div className="mb-6">
               <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-700 mb-2.5">
                 Color / Pattern: <span className="font-normal text-zinc-900">{selectedColor}</span>
               </label>
               <div className="flex flex-wrap gap-2">
-                {product.colors.map((col) => (
+                {product.colors?.map((col) => (
                   <button
                     key={col}
                     onClick={() => setSelectedColor(col)}
@@ -305,13 +326,8 @@ export default function ProductDetailView({ product: initialProduct, relatedProd
               <div className="flex justify-between items-center mb-2.5">
                 <div className="flex flex-wrap items-center gap-2">
                   <label className="text-xs font-semibold uppercase tracking-wider text-zinc-700">
-                    Select Size: <span className="font-normal text-zinc-900">{selectedSize}</span>
+                    Select Size: <span className="font-normal text-zinc-900">{activeSize}</span>
                   </label>
-                  {selectedSize.toLowerCase().includes('free') && (
-                    <span className="text-[11px] font-medium text-amber-800 bg-amber-50 border border-amber-300/60 px-2 py-0.5 rounded-full flex items-center gap-1">
-                      <span>✨</span> Any size of your choice (Flexible Fit)
-                    </span>
-                  )}
                 </div>
                 <Link
                   href="/size-guide"
@@ -328,11 +344,11 @@ export default function ProductDetailView({ product: initialProduct, relatedProd
                     key={sz}
                     onClick={() => setSelectedSize(sz)}
                     className={`min-w-[4rem] py-2 px-3.5 rounded-lg text-xs font-medium border transition-all text-center cursor-pointer ${
-                      selectedSize === sz
+                      activeSize === sz
                         ? 'border-gold-500 bg-gold-50 text-zinc-900 font-semibold ring-1 ring-gold-400 shadow-xs'
                         : 'border-zinc-200 bg-white text-zinc-700 hover:border-zinc-400'
                     }`}
-                    style={selectedSize === sz ? { borderColor: '#D4AF37', backgroundColor: 'rgba(212, 175, 55, 0.08)' } : {}}
+                    style={activeSize === sz ? { borderColor: '#D4AF37', backgroundColor: 'rgba(212, 175, 55, 0.08)' } : {}}
                   >
                     {sz}
                   </button>
@@ -406,19 +422,19 @@ export default function ProductDetailView({ product: initialProduct, relatedProd
         {/* Tab Buttons */}
         <div className="flex justify-between sm:justify-start border-b border-zinc-200 mb-6 sm:gap-10">
           {[
-            { id: 'details', label: 'Details' },
-            { id: 'sizing', label: 'Sizing' },
+            ...(hasProductDetails ? [{ id: 'details', label: 'Details' }] : []),
+            ...(productSizes.length > 0 ? [{ id: 'sizing', label: 'Sizing' }] : []),
             { id: 'delivery', label: 'Delivery' },
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
               className={`flex-1 sm:flex-initial text-center sm:text-left pb-3 text-xs sm:text-sm font-bold uppercase tracking-wider border-b-2 transition-all ${
-                activeTab === tab.id
+                visibleActiveTab === tab.id
                   ? 'border-gold-500 text-zinc-900'
                   : 'border-transparent text-zinc-400 hover:text-zinc-700'
               }`}
-              style={activeTab === tab.id ? { borderColor: '#D4AF37' } : {}}
+              style={visibleActiveTab === tab.id ? { borderColor: '#D4AF37' } : {}}
             >
               {tab.label}
             </button>
@@ -427,56 +443,38 @@ export default function ProductDetailView({ product: initialProduct, relatedProd
 
         {/* Stable Fixed Height Content Box (Prevents Page Resizing Jumps) */}
         <div className="text-xs sm:text-sm text-zinc-600 leading-relaxed min-h-[140px] flex flex-col justify-start">
-          {activeTab === 'details' && (
+          {visibleActiveTab === 'details' && hasProductDetails && (
             <div className="space-y-3">
               <h4 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#a18143' }}>
                 Details & Fabric Specifications
               </h4>
-              {product.fabric && (
-                <p><strong className="text-zinc-900">Fabric Composition:</strong> {product.fabric}</p>
+              {productFabric && (
+                <p><strong className="text-zinc-900">Fabric Composition:</strong> {productFabric}</p>
               )}
-              {product.details && product.details.length > 0 ? (
+              {productDetails.length > 0 && (
                 <ul className="list-disc list-inside space-y-1.5 text-zinc-600">
-                  {product.details.map((d, i) => (
+                  {productDetails.map((d, i) => (
                     <li key={i}>{d}</li>
                   ))}
                 </ul>
-              ) : (
-                <p>Tailored using premium fabrics and materials with signature boutique craftsmanship.</p>
               )}
             </div>
           )}
 
-          {activeTab === 'sizing' && (
+          {visibleActiveTab === 'sizing' && productSizes.length > 0 && (
             <div className="space-y-3">
-              <div className="flex items-center justify-between">
+              <div>
                 <h4 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#a18143' }}>
-                  Sizing &amp; Bespoke Fit Guide
+                  Available Sizes
                 </h4>
-                <Link
-                  href="/size-guide"
-                  target="_blank"
-                  className="text-xs font-semibold underline"
-                  style={{ color: '#a18143' }}
-                >
-                  Full Size Guide &rarr;
-                </Link>
               </div>
-
-              <div className="p-3 bg-amber-50/70 border border-amber-200/70 rounded-lg text-xs text-amber-900 leading-relaxed">
-                <strong>Free Size — Any Size of Your Choice:</strong> Garments tagged as Free Size feature flexible silhouettes, wrap styling, or stretch fabric blends engineered to effortlessly fit any size of your choice (typically fitting UK 8 to UK 18 / S to XXL).
-              </div>
-
-              <p className="text-xs text-zinc-600">
-                All individual sizes follow standard UK, US, and Turkey/European charts. If you require bespoke alterations, select <strong>&quot;Custom Fitting&quot;</strong> or message us directly on WhatsApp with your measurements.
-              </p>
-              <p className="text-zinc-500 text-xs">
-                Our in-house tailors in Lagos cut and adjust garments to your exact dimensions for both local Nigerian delivery and worldwide express shipping.
-              </p>
+              <ul className="list-disc list-inside space-y-1.5 text-zinc-600">
+                {productSizes.map((size) => <li key={size}>{size}</li>)}
+              </ul>
             </div>
           )}
 
-          {activeTab === 'delivery' && (
+          {visibleActiveTab === 'delivery' && (
             <div className="space-y-3">
               <h4 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#a18143' }}>
                 Shipping, Delivery & Returns
@@ -572,7 +570,7 @@ export default function ProductDetailView({ product: initialProduct, relatedProd
             <div>
               <h3 className="text-white font-serif text-lg md:text-xl font-medium">{product.name}</h3>
               <p className="text-xs text-gold-400 font-semibold" style={{ color: '#D4AF37' }}>
-                {viewLabels[currentIndex] || `Angle ${currentIndex + 1}`} ({currentIndex + 1} of {images.length})
+                Image {currentIndex + 1} of {images.length}
               </p>
             </div>
             <button

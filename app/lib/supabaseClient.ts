@@ -54,15 +54,22 @@ export type Database = {
           id: string;
           customer_name: string;
           customer_email: string;
+          customer_user_id: string | null;
+          customer_email_normalized: string;
           customer_phone: string | null;
           customer_address: string | null;
+          postal_code: string | null;
           total_amount: number;
           status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+          payment_status: 'pending' | 'submitted' | 'verified';
+          payment_confirmation_token_hash: string | null;
+          payment_submitted_at: string | null;
+          payment_verified_at: string | null;
           notes: string | null;
           created_at: string;
           updated_at: string;
         };
-        Insert: Omit<Database['public']['Tables']['orders']['Row'], 'id' | 'created_at' | 'updated_at'>;
+        Insert: Omit<Database['public']['Tables']['orders']['Row'], 'id' | 'created_at' | 'updated_at' | 'customer_email_normalized'>;
         Update: Partial<Database['public']['Tables']['orders']['Insert']>;
       };
       order_items: {

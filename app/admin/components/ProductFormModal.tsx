@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Trash2, Image as ImageIcon, Sparkles, AlertCircle } from 'lucide-react';
-import { Product, CategoryInfo } from '../../categories/[slug]/categoryData';
-import { supabase } from '../../lib/supabaseClient';
+import { X, Trash2, Image as ImageIcon, Sparkles, AlertCircle } from 'lucide-react';
+import type { Product, CategoryInfo } from '../../lib/productTypes';
+import { cleanProductDescription, cleanProductDetails, cleanProductFabric } from '../../lib/productCopy';
 
 interface ProductFormModalProps {
   isOpen: boolean;
@@ -14,10 +14,10 @@ interface ProductFormModalProps {
 }
 
 const CATEGORY_SIZE_PRESETS: Record<string, string[]> = {
-  clothes: ['UK 8 / US 4', 'UK 10 / US 6', 'UK 12 / US 8', 'UK 14 / US 10', 'UK 16 / US 12', 'Custom Fitting'],
-  shoes: ['EU 37 / UK 4', 'EU 38 / UK 5', 'EU 39 / UK 6', 'EU 40 / UK 7', 'EU 41 / UK 8'],
-  sandals: ['EU 37 / UK 4', 'EU 38 / UK 5', 'EU 39 / UK 6', 'EU 40 / UK 7', 'EU 41 / UK 8'],
-  slippers: ['EU 37 / UK 4', 'EU 38 / UK 5', 'EU 39 / UK 6', 'EU 40 / UK 7', 'EU 41 / UK 8'],
+  clothes: ['Nigeria 8 / UK 8', 'Nigeria 10 / UK 10', 'Nigeria 12 / UK 12', 'Nigeria 14 / UK 14', 'Nigeria 16 / UK 16', 'Custom Fitting'],
+  shoes: ['Nigeria 37 / UK 4', 'Nigeria 38 / UK 5', 'Nigeria 39 / UK 6', 'Nigeria 40 / UK 7', 'Nigeria 41 / UK 8'],
+  sandals: ['Nigeria 37 / UK 4', 'Nigeria 38 / UK 5', 'Nigeria 39 / UK 6', 'Nigeria 40 / UK 7', 'Nigeria 41 / UK 8'],
+  slippers: ['Nigeria 37 / UK 4', 'Nigeria 38 / UK 5', 'Nigeria 39 / UK 6', 'Nigeria 40 / UK 7', 'Nigeria 41 / UK 8'],
   handbags: ['One Size'],
 };
 
@@ -38,8 +38,8 @@ export default function ProductFormModal({
   const [image, setImage] = useState('');
   const [gallery, setGallery] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [badge, setBadge] = useState('Trending');
-  const [isNew, setIsNew] = useState(true);
+  const [badge, setBadge] = useState('');
+  const [isNew, setIsNew] = useState(false);
   const [description, setDescription] = useState('');
   const [fabric, setFabric] = useState('');
   
@@ -66,11 +66,11 @@ export default function ProductFormModal({
       setGallery(initialProduct.gallery || [initialProduct.image]);
       setBadge(initialProduct.badge || '');
       setIsNew(!!initialProduct.isNew);
-      setDescription(initialProduct.description || '');
-      setFabric(initialProduct.fabric || '');
-      setSizes(initialProduct.sizes || []);
-      setColors(initialProduct.colors || []);
-      setDetails(initialProduct.details || []);
+      setDescription(cleanProductDescription(initialProduct.description, initialProduct.name) || '');
+      setFabric(cleanProductFabric(initialProduct.fabric) || '');
+      setSizes(initialProduct.categorySlug === 'bags' ? [] : initialProduct.sizes || []);
+      setColors(initialProduct.categorySlug === 'bags' ? [] : initialProduct.colors || []);
+      setDetails(cleanProductDetails(initialProduct.details));
     } else {
       const defaultCat = categories[0] || { name: 'Clothes (Skirts & Blouses)', slug: 'clothes' };
       setName('');
@@ -80,18 +80,17 @@ export default function ProductFormModal({
       setRawPrice(45000);
       setImage('');
       setGallery([]);
-      setBadge('Trending');
-      setIsNew(true);
+      setBadge('');
+      setIsNew(false);
       setDescription('');
-      setFabric('Premium Boutique Silk & Cotton');
-      setSizes(CATEGORY_SIZE_PRESETS[defaultCat.slug] || CATEGORY_SIZE_PRESETS.clothes);
-      setColors(['Gold & Black', 'Emerald Green']);
-      setDetails([
-        'Handcrafted in Nigeria with luxury tailoring',
-        'Concealed invisible zip closure',
-        'Dry clean only',
-      ]);
+      setFabric('');
+      setSizes([]);
+      setColors([]);
+      setDetails([]);
     }
+    setSizeInput('');
+    setColorInput('');
+    setDetailInput('');
     setError('');
     setActiveTab('basics');
   }, [initialProduct, isOpen, categories]);
@@ -105,16 +104,18 @@ export default function ProductFormModal({
     }
   };
 
-  // Handle category change and auto-preset sizes
+  // Bags do not have size or color variants.
   const handleCategoryChange = (selectedCatName: string) => {
     setCategory(selectedCatName);
     const match = categories.find(c => c.name.toLowerCase() === selectedCatName.toLowerCase());
     const newSlug = match ? match.slug : selectedCatName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     setCategorySlug(newSlug);
 
-    // If sizes are still default preset or empty, switch to new category presets
-    if (CATEGORY_SIZE_PRESETS[newSlug]) {
-      setSizes(CATEGORY_SIZE_PRESETS[newSlug]);
+    if (newSlug === 'bags') {
+      setSizes([]);
+      setColors([]);
+      setSizeInput('');
+      setColorInput('');
     }
   };
 
@@ -162,9 +163,10 @@ export default function ProductFormModal({
       }
 
       setImage((currentImage) => currentImage || uploadedUrls[0]);
-      setGallery((currentGallery) => [...currentGallery, ...uploadedUrls]);
-    } catch (err: any) {
-      setError(`Upload failed: ${err.message}`);
+      setGallery((currentGallery) => [...uploadedUrls, ...currentGallery]);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'An unexpected error occurred.';
+      setError(`Upload failed: ${message}`);
     } finally {
       setIsUploading(false);
     }
@@ -237,13 +239,13 @@ export default function ProductFormModal({
       price: formattedPrice,
       image: image.trim(),
       gallery: finalGallery,
-      badge: badge.trim() || undefined,
+      badge: badge.trim(),
       isNew,
-      description: description.trim() || `Exclusive ${name} from T&D Fashion Trend. Tailored with elegance and premium materials.`,
-      fabric: fabric.trim() || undefined,
-      sizes: sizes.length > 0 ? sizes : undefined,
-      colors: colors.length > 0 ? colors : undefined,
-      details: details.length > 0 ? details : undefined,
+      description: description.trim(),
+      fabric: fabric.trim(),
+      sizes: categorySlug === 'bags' ? [] : sizes,
+      colors: categorySlug === 'bags' ? [] : colors,
+      details,
     });
 
     onClose();
@@ -474,7 +476,7 @@ export default function ProductFormModal({
                   <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-2">Main Cover Preview</p>
                   <div className="relative aspect-3/4 w-full rounded-xl bg-zinc-800 border border-zinc-700 overflow-hidden flex items-center justify-center">
                     {image ? (
-                      <img src={image} alt="Preview" className="w-full h-full object-cover" />
+                      <img src={image} alt="Preview" className="w-full h-full object-cover object-center scale-[1.12]" />
                     ) : (
                       <div className="text-center p-4 text-zinc-500">
                         <ImageIcon className="w-8 h-8 mx-auto mb-1 opacity-50" />
@@ -541,6 +543,7 @@ export default function ProductFormModal({
               </div>
 
               {/* Sizes */}
+              {categorySlug !== 'bags' && (
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-300">
@@ -599,8 +602,10 @@ export default function ProductFormModal({
                   ))}
                 </div>
               </div>
+              )}
 
               {/* Colors / Patterns */}
+              {categorySlug !== 'bags' && (
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-2">
                   Colors / Patterns ({colors.length})
@@ -647,6 +652,7 @@ export default function ProductFormModal({
                   ))}
                 </div>
               </div>
+              )}
 
               {/* Bullet Detail Points */}
               <div>

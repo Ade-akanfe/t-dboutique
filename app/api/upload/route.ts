@@ -22,7 +22,8 @@ export async function POST(request: Request) {
     const uploadResponse = await new Promise<{ secure_url: string; public_id: string }>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
-          folder: 'products',
+          asset_folder: 'home/TandD/boutique/uploads',
+          folder: 'home/TandD/boutique/uploads',
           resource_type: 'auto',
           quality: 'auto',
           fetch_format: 'auto',

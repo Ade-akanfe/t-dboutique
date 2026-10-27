@@ -40,7 +40,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="mb-10 max-w-lg font-inter text-lg font-light text-zinc-200 md:text-xl"
           >
-            Discover exclusive collections designed for the contemporary trendsetter. Step into a world of premium fashion at T&D.
+            Discover exclusive collections designed for the modern woman. Step into a world of premium style at T&amp;D Ladies Fashion.
           </motion.p>
 
           <motion.div

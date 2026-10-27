@@ -20,6 +20,14 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Checkout and order email setup
+
+1. Configure the variables in `.env.example` in your local environment and deployment settings. Keep `SUPABASE_SERVICE_ROLE_KEY` and `RESEND_API_KEY` server-only; never prefix them with `NEXT_PUBLIC_`.
+2. In Supabase, apply `supabase/migrations/001_initial_schema.sql`, then `supabase/schema/users.sql`, then migrations `002_order_payment.sql`, `003_customer_order_history.sql`, `004_order_account_ownership.sql`, and `005_order_delivery_details.sql` in order.
+3. In Resend, verify the sender domain and set `RESEND_FROM_EMAIL` to a sender address on that domain.
+
+Customers can check out as guests with an email address or request a Supabase email/password account. Bank transfer details are shown after an order is placed. The first email confirms that the customer submitted a transfer confirmation; admins must verify it and confirm the order before the second email is sent.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

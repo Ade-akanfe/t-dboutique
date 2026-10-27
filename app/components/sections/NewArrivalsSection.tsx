@@ -14,9 +14,14 @@ export default function NewArrivalsSection() {
 
   const newArrivals = useMemo(() => {
     if (!isLoaded) return [];
-    return [...products]
-      .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''))
-      .slice(0, 4);
+    return products
+      .filter((product) => typeof product.id === 'string' && product.isNew)
+      .sort(
+        (a, b) =>
+          (Date.parse(b.createdAt ?? '') || 0) -
+          (Date.parse(a.createdAt ?? '') || 0)
+      )
+      .slice(0, 8);
   }, [isLoaded, products]);
 
   const handleAddToCart = (product: Product) => {
@@ -32,7 +37,7 @@ export default function NewArrivalsSection() {
             New <span className="italic font-light" style={{ color: '#D4AF37' }}>Arrivals</span>
           </h2>
           <p className="text-zinc-500 max-w-2xl mx-auto">
-            Discover our latest stunning gown collections, celebrating elegance with a touch of Nigerian flair.
+            Discover the latest products added to our collection.
           </p>
         </div>
 
@@ -40,21 +45,14 @@ export default function NewArrivalsSection() {
           {newArrivals.map((product) => (
             <div key={product.id} className="group">
               {/* Fixed height on mobile to prevent excessive scroll */}
-              <div className="relative h-52 sm:h-64 md:aspect-3/4 md:h-auto bg-zinc-100 mb-5 overflow-hidden rounded-xl">
-                <Link href={`/products/${product.slug}`} className="block w-full h-full">
+              <div className="relative aspect-[3/4] bg-zinc-100 mb-5 overflow-hidden rounded-xl">
+                <Link href={`/products/${product.slug}`} className="absolute inset-0 block">
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                    className="absolute inset-0 w-full h-full object-contain object-center scale-[1.12] group-hover:scale-[1.18] transition-transform duration-700 ease-in-out"
                   />
                 </Link>
-                {/* New Badge */}
-                <div
-                  className="absolute top-4 left-4 text-white text-xs font-bold uppercase tracking-wider py-1 px-3 rounded-full pointer-events-none"
-                  style={{ background: 'linear-gradient(135deg, #D4AF37, #a18143)' }}
-                >
-                  New
-                </div>
                 {/* Add to Cart on hover */}
                 <button
                   onClick={() => handleAddToCart(product)}
@@ -80,13 +78,13 @@ export default function NewArrivalsSection() {
 
         <div className="mt-12 text-center">
           <Link
-            href="/categories/clothes"
+            href="/categories/all"
             className="inline-flex items-center justify-center px-8 py-3 border text-base font-medium rounded-md transition-all duration-300 hover:text-white"
             style={{ borderColor: '#D4AF37', color: '#D4AF37' }}
             onMouseEnter={e => (e.currentTarget.style.background = '#D4AF37')}
             onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
           >
-            View All Clothing
+            View All Products
           </Link>
         </div>
       </div>

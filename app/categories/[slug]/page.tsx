@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
 import CategoryView from './CategoryView';
-import { ALL_PRODUCTS, CATEGORIES } from './categoryData';
 import { cloudinaryImage } from '../../lib/cloudinaryImages';
 
 function canonicalCategorySlug(slug: string): string {
@@ -36,7 +35,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         canonical: '/gowns',
       },
       openGraph: {
-        title: 'Designer Gowns & Luxury Dresses | T&D Fashion Trend Lagos',
+        title: 'Designer Gowns & Luxury Dresses | T&D Ladies Fashion Lagos',
         description:
           'Explore our exclusive gown collection from T&D Collections and international labels. Express worldwide delivery from Lagos, Nigeria.',
         images: [{ url: cloudinaryImage('product-383.jpg'), width: 800, height: 1066 }],
@@ -57,13 +56,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         'designer tops and blouses nigeria',
         'buy clothes online nigeria',
         'worldwide delivery nigerian clothing',
-        't&d fashion trend boutique',
+        't&d ladies fashion boutique',
       ],
       alternates: {
         canonical: '/clothes',
       },
       openGraph: {
-        title: "Women's Luxury Clothes & Skirts | T&D Fashion Trend Lagos",
+        title: "Women's Luxury Clothes & Skirts | T&D Ladies Fashion Lagos",
         description:
           'Curated skirts, blouses, and designer sets from T&D Collections. Handcrafted luxury with fast delivery in Nigeria and worldwide express shipping.',
         images: [{ url: cloudinaryImage('product-01.jpg'), width: 800, height: 1066 }],
@@ -71,29 +70,27 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
   }
 
-  const foundCategory = CATEGORIES.find((c) => c.slug.toLowerCase() === canonical);
   const formattedTitle =
     canonical === 'all'
       ? 'All Categories & Collections'
-      : foundCategory?.name || slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ');
+      : slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ');
 
   return {
     title: `${formattedTitle} | T&D Boutique Lagos (Worldwide Delivery)`,
     description:
-      foundCategory?.description ||
-      `Explore our latest ${formattedTitle} collection at T&D Fashion Trend Boutique Lagos. Handcrafted luxury, modern Nigerian couture, and worldwide express delivery.`,
+      `Explore our latest ${formattedTitle} collection at T&D Ladies Fashion Boutique Lagos. Handcrafted luxury, modern Nigerian couture, and worldwide express delivery.`,
     keywords: [slug, 'fashion', 'boutique', 'T&D Fashion', 'Nigerian fashion', 'Lagos boutique', 'luxury clothing', 'worldwide delivery'],
     alternates: {
       canonical: `/categories/${canonical}`,
     },
     openGraph: {
-      title: `${formattedTitle} | T&D Fashion Trend`,
-      description: `Discover exclusive ${formattedTitle} designs at T&D Fashion Trend Boutique Lagos.`,
+      title: `${formattedTitle} | T&D Ladies Fashion`,
+      description: `Discover exclusive ${formattedTitle} designs at T&D Ladies Fashion Boutique Lagos.`,
       images: [
         {
-          url: foundCategory?.bannerImage || '/logo.png',
-          width: 800,
-          height: 600,
+          url: '/logo.png',
+          width: 1024,
+          height: 1024,
         },
       ],
     },
@@ -104,8 +101,6 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const canonical = canonicalCategorySlug(slug);
 
-  const foundCategory = CATEGORIES.find((c) => c.slug.toLowerCase() === canonical);
-
   let categoryTitle = 'All Products';
   let categoryDescription = 'Browse our complete catalog of tailored clothing, designer gowns, and contemporary Nigerian fashion.';
 
@@ -115,22 +110,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   } else if (canonical === 'clothes') {
     categoryTitle = 'Clothes (Skirts & Blouses)';
     categoryDescription = 'Contemporary clothing looks from T&D Collections and selected international designer labels. Doorstep dispatch in Lagos, nationwide delivery across Nigeria & express worldwide shipping.';
-  } else if (foundCategory) {
-    categoryTitle = foundCategory.name;
-    categoryDescription = foundCategory.description;
   }
-
-  // Get matching products
-  const products =
-    canonical === 'all'
-      ? ALL_PRODUCTS
-      : ALL_PRODUCTS.filter(
-          (p) =>
-            p.categorySlug.toLowerCase() === canonical ||
-            p.category.toLowerCase().includes(canonical)
-        );
-
-  const displayProducts = products.length > 0 ? products : ALL_PRODUCTS;
 
   return (
     <main className="flex min-h-screen flex-col w-full overflow-x-hidden">
@@ -138,7 +118,6 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
       <div className="bg-zinc-50 pt-28 md:pt-32 pb-20 flex-grow">
         <CategoryView
           currentSlug={canonical}
-          initialProducts={displayProducts}
           categoryTitle={categoryTitle}
           categoryDescription={categoryDescription}
         />
