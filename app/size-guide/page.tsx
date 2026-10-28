@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     title: 'Size Guide & Measurement Chart | T&D Ladies Fashion Lagos',
     description:
       'Find your exact fit with our comprehensive UK, US, Turkey, and Free Size guide. Worldwide express delivery available from Lagos, Nigeria.',
-    images: [{ url: '/logo.png', width: 469, height: 397 }],
+    images: [{ url: '/new_logo.png', width: 1380, height: 1301 }],
   },
 };
 

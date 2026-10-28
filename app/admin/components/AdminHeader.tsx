@@ -31,7 +31,7 @@ export default function AdminHeader({
         <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
           <div className="flex items-center gap-4">
             <Image
-              src="/logo.png"
+              src="/new_logo.png"
               alt="T&D Ladies Fashion"
               width={112}
               height={95}

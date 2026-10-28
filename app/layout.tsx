@@ -22,18 +22,18 @@ export const metadata: Metadata = {
   description: "Discover elegant clothing, bags, and shoes from T&D Ladies Fashion.",
   keywords: ["boutique", "fashion", "T&D Ladies Fashion", "clothing", "premium fashion"],
   icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: "/new_logo.png",
+    shortcut: "/new_logo.png",
+    apple: "/new_logo.png",
   },
   openGraph: {
     title: "T&D Ladies Fashion",
     description: "Discover elegant clothing, bags, and shoes from T&D Ladies Fashion.",
     images: [
       {
-        url: "/logo.png",
-        width: 1024,
-        height: 1024,
+        url: "/new_logo.png",
+        width: 1380,
+        height: 1301,
       },
     ],
     locale: "en_US",

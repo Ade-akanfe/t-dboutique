@@ -94,7 +94,7 @@ export default function AdminLoginPage() {
           {/* Header */}
           <div className="flex flex-col items-center mb-8">
             <Image
-              src="/logo.png"
+              src="/new_logo.png"
               alt="T&D Ladies Fashion Logo"
               width={168}
               height={142}

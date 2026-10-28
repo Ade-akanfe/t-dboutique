@@ -88,9 +88,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: `Discover exclusive ${formattedTitle} designs at T&D Ladies Fashion Boutique Lagos.`,
       images: [
         {
-          url: '/logo.png',
-          width: 1024,
-          height: 1024,
+          url: '/new_logo.png',
+          width: 1380,
+          height: 1301,
         },
       ],
     },
