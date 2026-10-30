@@ -6,30 +6,30 @@ import { cloudinaryImage } from '../lib/cloudinaryImages';
 import { SITE_URL } from '../lib/siteUrl';
 
 export const metadata: Metadata = {
-  title: 'Designer Gowns & Luxury Evening Dresses | T&D Boutique Lagos (Worldwide Delivery)',
+  title: 'Designer Gowns & Luxury Evening Dresses | T&D Boutique Abuja (Worldwide Delivery)',
   description:
-    'Shop luxury designer gowns, evening wear, and Nigerian couture dresses at T&D Boutique Lagos. Handcrafted luxury, custom fittings, and premium fabrics with doorstep delivery across Nigeria and worldwide express delivery to the UK, US, Canada, Europe & Africa.',
+    'Shop luxury designer gowns, evening wear, and Nigerian couture dresses at T&D Boutique Abuja. Handcrafted luxury, custom fittings, and premium fabrics with doorstep delivery across Nigeria and worldwide express delivery to the UK, US, Canada, Europe & Africa.',
   keywords: [
-    'designer gowns lagos',
+    'designer gowns abuja',
     'evening dresses nigeria',
     'nigerian boutique gowns',
-    'luxury gown store lagos',
+    'luxury gown store abuja',
     'buy gowns online nigeria',
-    'wedding guest dresses lagos',
+    'wedding guest dresses abuja',
     'cocktail dresses nigeria',
-    'prom dresses lagos',
+    'prom dresses abuja',
     'nigerian couture gowns',
     'worldwide delivery nigerian fashion',
     'uk delivery nigerian boutique',
-    't&d fashion boutique lagos',
+    't&d fashion boutique abuja',
   ],
   alternates: {
     canonical: '/gowns',
   },
   openGraph: {
-    title: 'Designer Gowns & Luxury Dresses | T&D Ladies Fashion Lagos',
+    title: 'Designer Gowns & Luxury Dresses | T&D Ladies Fashion Abuja',
     description:
-      'Explore our exclusive gown collection from T&D Collections and international designer labels. Shop from Lagos with express worldwide delivery.',
+      'Explore our exclusive gown collection from T&D Collections and international designer labels. Shop from Abuja with express worldwide delivery.',
     url: '/gowns',
     siteName: 'T&D Ladies Fashion Boutique',
     locale: 'en_NG',
@@ -39,13 +39,13 @@ export const metadata: Metadata = {
         url: cloudinaryImage('product-383.jpg'),
         width: 800,
         height: 1066,
-        alt: 'T&D Boutique Designer Gowns Lagos',
+        alt: 'T&D Boutique Designer Gowns Abuja',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Designer Gowns & Luxury Dresses | T&D Boutique Lagos',
+    title: 'Designer Gowns & Luxury Dresses | T&D Boutique Abuja',
     description:
       'Luxury gowns with doorstep delivery across Nigeria and worldwide express delivery to UK, US, Canada & globally.',
     images: [cloudinaryImage('product-383.jpg')],
@@ -56,13 +56,13 @@ export default function GownsPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': ['CollectionPage', 'ClothingStore'],
-    name: 'Designer Gowns Collection — T&D Boutique Lagos',
+    name: 'Designer Gowns Collection — T&D Boutique Abuja',
     description:
-      'Luxury designer gowns and evening dresses handcrafted in Lagos, Nigeria with worldwide express shipping.',
+      'Luxury designer gowns and evening dresses handcrafted in Abuja, Nigeria with worldwide express shipping.',
     url: `${SITE_URL}/gowns`,
     address: {
       '@type': 'PostalAddress',
-      addressLocality: 'Lagos',
+      addressLocality: 'Abuja',
       addressCountry: 'NG',
     },
     currenciesAccepted: 'NGN, USD, GBP, EUR',

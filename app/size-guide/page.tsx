@@ -4,23 +4,23 @@ import Footer from '../components/layout/Footer';
 import SizeGuideContent from './SizeGuideContent';
 
 export const metadata: Metadata = {
-  title: 'Size Guide & Fit Chart | T&D Boutique Lagos — Worldwide Delivery',
+  title: 'Size Guide & Fit Chart | T&D Boutique Abuja — Worldwide Delivery',
   description:
-    'Comprehensive women\'s size guide and international conversion chart for T&D Boutique Lagos, Nigeria. Accurate UK, US, Turkey/EU sizing, Free Size flexible fit details, and measurement tips with worldwide express shipping.',
+    'Comprehensive women\'s size guide and international conversion chart for T&D Boutique Abuja, Nigeria. Accurate UK, US, Turkey/EU sizing, Free Size flexible fit details, and measurement tips with worldwide express shipping.',
   keywords: [
     'size guide nigeria',
-    'dress size chart lagos',
+    'dress size chart abuja',
     'uk to us dress sizes',
     'free size meaning nigeria boutique',
     'turkey size 42 in uk',
     'nigerian boutique sizing',
-    't&d boutique lagos size guide',
+    't&d boutique abuja size guide',
     'worldwide delivery nigerian fashion',
   ],
   openGraph: {
-    title: 'Size Guide & Measurement Chart | T&D Ladies Fashion Lagos',
+    title: 'Size Guide & Measurement Chart | T&D Ladies Fashion Abuja',
     description:
-      'Find your exact fit with our comprehensive UK, US, Turkey, and Free Size guide. Worldwide express delivery available from Lagos, Nigeria.',
+      'Find your exact fit with our comprehensive UK, US, Turkey, and Free Size guide. Worldwide express delivery available from Abuja, Nigeria.',
     images: [{ url: '/new_logo.png', width: 1380, height: 1301 }],
   },
 };

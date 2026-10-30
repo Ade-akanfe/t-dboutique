@@ -6,15 +6,15 @@ import { cloudinaryImage } from '../lib/cloudinaryImages';
 import { SITE_URL } from '../lib/siteUrl';
 
 export const metadata: Metadata = {
-  title: 'Luxury Bags & Handbags | T&D Boutique Lagos',
+  title: 'Luxury Bags & Handbags | T&D Boutique Abuja',
   description:
-    'Explore curated luxury bags and statement handbags from T&D Boutique Lagos. Shop outstanding handbag styles with nationwide delivery in Nigeria and worldwide shipping.',
-  keywords: ['luxury bags lagos', 'handbags nigeria', 'designer bags lagos', 'buy bags online nigeria', 'boutique handbags'],
+    'Explore curated luxury bags and statement handbags from T&D Boutique Abuja. Shop outstanding handbag styles with nationwide delivery in Nigeria and worldwide shipping.',
+  keywords: ['luxury bags abuja', 'handbags nigeria', 'designer bags abuja', 'buy bags online nigeria', 'boutique handbags'],
   alternates: {
     canonical: '/bags',
   },
   openGraph: {
-    title: 'Luxury Bags & Handbags | T&D Boutique Lagos',
+    title: 'Luxury Bags & Handbags | T&D Boutique Abuja',
     description: 'Curated handbag collection with boutique styling and worldwide delivery.',
     url: '/bags',
     siteName: 'T&D Ladies Fashion Boutique',
@@ -28,12 +28,12 @@ export default function BagsPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': ['CollectionPage', 'ClothingStore'],
-    name: 'Luxury Bags Collection — T&D Boutique Lagos',
-    description: 'Luxury handbags and statement bags curated in Lagos, Nigeria.',
+    name: 'Luxury Bags Collection — T&D Boutique Abuja',
+    description: 'Luxury handbags and statement bags curated in Abuja, Nigeria.',
     url: `${SITE_URL}/bags`,
     address: {
       '@type': 'PostalAddress',
-      addressLocality: 'Lagos',
+      addressLocality: 'Abuja',
       addressCountry: 'NG',
     },
     currenciesAccepted: 'NGN, USD, GBP, EUR',
@@ -54,7 +54,7 @@ export default function BagsPage() {
         <CategoryView
           currentSlug="bags"
           categoryTitle="Luxury Bags"
-          categoryDescription="Statement handbags and elevated carryalls curated for the T&D Boutique collection. Shop in Lagos and enjoy express worldwide shipping."
+          categoryDescription="Statement handbags and elevated carryalls curated for the T&D Boutique collection. Shop in Abuja and enjoy express worldwide shipping."
         />
       </div>
       <Footer />

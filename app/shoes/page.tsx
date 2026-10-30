@@ -6,15 +6,15 @@ import { cloudinaryImage } from '../lib/cloudinaryImages';
 import { SITE_URL } from '../lib/siteUrl';
 
 export const metadata: Metadata = {
-  title: 'Luxury Shoes & Footwear | T&D Boutique Lagos',
+  title: 'Luxury Shoes & Footwear | T&D Boutique Abuja',
   description:
-    'Shop luxury footwear and statement shoes from T&D Boutique Lagos. Discover elegant shoe styles with fast delivery across Nigeria and worldwide shipping.',
-  keywords: ['luxury shoes lagos', 'designer shoes nigeria', 'fashion footwear lagos', 'buy shoes online nigeria', 'boutique heels'],
+    'Shop luxury footwear and statement shoes from T&D Boutique Abuja. Discover elegant shoe styles with fast delivery across Nigeria and worldwide shipping.',
+  keywords: ['luxury shoes abuja', 'designer shoes nigeria', 'fashion footwear abuja', 'buy shoes online nigeria', 'boutique heels'],
   alternates: {
     canonical: '/shoes',
   },
   openGraph: {
-    title: 'Luxury Shoes & Footwear | T&D Boutique Lagos',
+    title: 'Luxury Shoes & Footwear | T&D Boutique Abuja',
     description: 'Curated designer shoes collection with boutique styling and worldwide delivery.',
     url: '/shoes',
     siteName: 'T&D Ladies Fashion Boutique',
@@ -28,12 +28,12 @@ export default function ShoesPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': ['CollectionPage', 'ClothingStore'],
-    name: 'Luxury Shoes Collection — T&D Boutique Lagos',
-    description: 'Luxury footwear and statement shoes curated in Lagos, Nigeria.',
+    name: 'Luxury Shoes Collection — T&D Boutique Abuja',
+    description: 'Luxury footwear and statement shoes curated in Abuja, Nigeria.',
     url: `${SITE_URL}/shoes`,
     address: {
       '@type': 'PostalAddress',
-      addressLocality: 'Lagos',
+      addressLocality: 'Abuja',
       addressCountry: 'NG',
     },
     currenciesAccepted: 'NGN, USD, GBP, EUR',
@@ -54,7 +54,7 @@ export default function ShoesPage() {
         <CategoryView
           currentSlug="shoes"
           categoryTitle="Luxury Shoes"
-          categoryDescription="Elegant footwear styles curated to complete the T&D Boutique look. Doorstep delivery in Lagos and express worldwide shipping available."
+          categoryDescription="Elegant footwear styles curated to complete the T&D Boutique look. Doorstep delivery in Abuja and express worldwide shipping available."
         />
       </div>
       <Footer />

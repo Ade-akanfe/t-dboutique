@@ -18,16 +18,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   if (canonical === 'gowns') {
     return {
-      title: 'Designer Gowns & Luxury Evening Dresses | T&D Boutique Lagos (Worldwide Delivery)',
+      title: 'Designer Gowns & Luxury Evening Dresses | T&D Boutique Abuja (Worldwide Delivery)',
       description:
-        'Shop luxury designer gowns, evening wear, and Nigerian couture dresses at T&D Boutique Lagos. Handcrafted luxury, custom fittings, and premium fabrics with doorstep delivery across Nigeria and worldwide express delivery to the UK, US, Canada, Europe & Africa.',
+        'Shop luxury designer gowns, evening wear, and Nigerian couture dresses at T&D Boutique Abuja. Handcrafted luxury, custom fittings, and premium fabrics with doorstep delivery across Nigeria and worldwide express delivery to the UK, US, Canada, Europe & Africa.',
       keywords: [
-        'designer gowns lagos',
+        'designer gowns abuja',
         'evening dresses nigeria',
         'nigerian boutique gowns',
-        'luxury gown store lagos',
+        'luxury gown store abuja',
         'buy gowns online nigeria',
-        'wedding guest dresses lagos',
+        'wedding guest dresses abuja',
         'worldwide delivery nigerian fashion',
         't&d boutique gowns',
       ],
@@ -35,9 +35,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         canonical: '/gowns',
       },
       openGraph: {
-        title: 'Designer Gowns & Luxury Dresses | T&D Ladies Fashion Lagos',
+        title: 'Designer Gowns & Luxury Dresses | T&D Ladies Fashion Abuja',
         description:
-          'Explore our exclusive gown collection from T&D Collections and international labels. Express worldwide delivery from Lagos, Nigeria.',
+          'Explore our exclusive gown collection from T&D Collections and international labels. Express worldwide delivery from Abuja, Nigeria.',
         images: [{ url: cloudinaryImage('product-383.jpg'), width: 800, height: 1066 }],
       },
     };
@@ -45,14 +45,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   if (canonical === 'clothes') {
     return {
-      title: "Women's Clothes, Skirts & Blouses | T&D Boutique Lagos (Worldwide Delivery)",
+      title: "Women's Clothes, Skirts & Blouses | T&D Boutique Abuja (Worldwide Delivery)",
       description:
-        "Shop premium women's skirts, blouses, two-piece sets, and luxury clothing looks at T&D Boutique Lagos, Nigeria. Contemporary African couture and curated European labels with fast nationwide delivery in Nigeria and worldwide express shipping.",
+        "Shop premium women's skirts, blouses, two-piece sets, and luxury clothing looks at T&D Boutique Abuja, Nigeria. Contemporary African couture and curated European labels with fast nationwide delivery in Nigeria and worldwide express shipping.",
       keywords: [
-        'womens clothes lagos',
+        'womens clothes abuja',
         'skirts and blouses nigeria',
         'nigerian boutique clothing',
-        'luxury skirts lagos',
+        'luxury skirts abuja',
         'designer tops and blouses nigeria',
         'buy clothes online nigeria',
         'worldwide delivery nigerian clothing',
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         canonical: '/clothes',
       },
       openGraph: {
-        title: "Women's Luxury Clothes & Skirts | T&D Ladies Fashion Lagos",
+        title: "Women's Luxury Clothes & Skirts | T&D Ladies Fashion Abuja",
         description:
           'Curated skirts, blouses, and designer sets from T&D Collections. Handcrafted luxury with fast delivery in Nigeria and worldwide express shipping.',
         images: [{ url: cloudinaryImage('product-01.jpg'), width: 800, height: 1066 }],
@@ -76,16 +76,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       : slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ');
 
   return {
-    title: `${formattedTitle} | T&D Boutique Lagos (Worldwide Delivery)`,
+    title: `${formattedTitle} | T&D Boutique Abuja (Worldwide Delivery)`,
     description:
-      `Explore our latest ${formattedTitle} collection at T&D Ladies Fashion Boutique Lagos. Handcrafted luxury, modern Nigerian couture, and worldwide express delivery.`,
-    keywords: [slug, 'fashion', 'boutique', 'T&D Fashion', 'Nigerian fashion', 'Lagos boutique', 'luxury clothing', 'worldwide delivery'],
+      `Explore our latest ${formattedTitle} collection at T&D Ladies Fashion Boutique Abuja. Handcrafted luxury, modern Nigerian couture, and worldwide express delivery.`,
+    keywords: [slug, 'fashion', 'boutique', 'T&D Fashion', 'Nigerian fashion', 'Abuja boutique', 'luxury clothing', 'worldwide delivery'],
     alternates: {
       canonical: `/categories/${canonical}`,
     },
     openGraph: {
       title: `${formattedTitle} | T&D Ladies Fashion`,
-      description: `Discover exclusive ${formattedTitle} designs at T&D Ladies Fashion Boutique Lagos.`,
+      description: `Discover exclusive ${formattedTitle} designs at T&D Ladies Fashion Boutique Abuja.`,
       images: [
         {
           url: '/new_logo.png',
@@ -109,7 +109,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     categoryDescription = 'Exquisite gown collections celebrating modern elegance, red carpet glam, and contemporary Nigerian couture. Fast doorstep delivery across Nigeria & express worldwide shipping.';
   } else if (canonical === 'clothes') {
     categoryTitle = 'Clothes (Skirts & Blouses)';
-    categoryDescription = 'Contemporary clothing looks from T&D Collections and selected international designer labels. Doorstep dispatch in Lagos, nationwide delivery across Nigeria & express worldwide shipping.';
+    categoryDescription = 'Contemporary clothing looks from T&D Collections and selected international designer labels. Doorstep dispatch in Abuja, nationwide delivery across Nigeria & express worldwide shipping.';
   }
 
   return (

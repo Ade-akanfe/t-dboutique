@@ -482,7 +482,7 @@ export default function ProductDetailView({ product: initialProduct, relatedProd
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                 <div className="p-3 bg-zinc-50 rounded-lg border border-zinc-100">
-                  <p className="font-semibold text-zinc-900 mb-0.5">Lagos Delivery</p>
+                  <p className="font-semibold text-zinc-900 mb-0.5">Abuja Delivery</p>
                   <p className="text-zinc-500 text-xs">24–48 hours direct to your doorstep via reliable dispatch.</p>
                 </div>
                 <div className="p-3 bg-zinc-50 rounded-lg border border-zinc-100">

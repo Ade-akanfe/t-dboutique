@@ -59,7 +59,7 @@ export default function SizeGuideContent() {
           Women&apos;s Size &amp; Fit Guide
         </h1>
         <p className="text-base md:text-lg text-zinc-600 leading-relaxed">
-          At T&amp;D Ladies Fashion Boutique Lagos, every piece is curated for timeless elegance. Use our international conversion charts below to select your ideal fit, whether you order across Nigeria or with our worldwide express shipping.
+          At T&amp;D Ladies Fashion Boutique Abuja, every piece is curated for timeless elegance. Use our international conversion charts below to select your ideal fit, whether you order across Nigeria or with our worldwide express shipping.
         </p>
       </div>
 
@@ -252,7 +252,7 @@ export default function SizeGuideContent() {
               <h3 className="text-xl font-serif text-zinc-900">Worldwide Express Delivery</h3>
             </div>
             <p className="text-xs md:text-sm text-zinc-600 leading-relaxed mb-5">
-              We ship internationally from Lagos, Nigeria to customers worldwide, including the <strong>United Kingdom, United States, Canada, Europe, UAE, and across Africa</strong> via DHL Express and trusted couriers.
+              We ship internationally from Abuja, Nigeria to customers worldwide, including the <strong>United Kingdom, United States, Canada, Europe, UAE, and across Africa</strong> via DHL Express and trusted couriers.
             </p>
 
             <div className="bg-zinc-50 rounded-xl p-4 border border-zinc-100 mb-6">
@@ -261,7 +261,7 @@ export default function SizeGuideContent() {
                 Need Custom Fitting or Size Advice?
               </h4>
               <p className="text-xs text-zinc-500 leading-relaxed">
-                Unsure whether to choose UK 12 or UK 14? Send us your bust, waist, and hip measurements directly on WhatsApp. Our master tailors in Lagos will confirm the best fit or custom-tailor the piece before dispatch.
+                Unsure whether to choose UK 12 or UK 14? Send us your bust, waist, and hip measurements directly on WhatsApp. Our master tailors in Abuja will confirm the best fit or custom-tailor the piece before dispatch.
               </p>
             </div>
           </div>
@@ -273,7 +273,7 @@ export default function SizeGuideContent() {
             className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs md:text-sm font-semibold tracking-wider uppercase transition-colors shadow-sm"
           >
             <MessageCircle className="w-4 h-4" />
-            Chat with Lagos Styling Team on WhatsApp
+            Chat with Abuja Styling Team on WhatsApp
           </a>
         </div>
       </div>

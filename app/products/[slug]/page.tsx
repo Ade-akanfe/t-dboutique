@@ -23,9 +23,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const formattedTitle = product?.name || slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ');
   const description =
     product
-      ? `Shop ${product.name} at T&D Ladies Fashion, a Lagos, Nigeria boutique. ${product.description || `Price: ${product.price}. Order online for delivery across Nigeria.`}`
+      ? `Shop ${product.name} at T&D Ladies Fashion, a Abuja, Nigeria boutique. ${product.description || `Price: ${product.price}. Order online for delivery across Nigeria.`}`
           .slice(0, 160)
-      : 'Shop women’s fashion, gowns, clothing, bags, and shoes from T&D Ladies Fashion in Lagos, Nigeria.';
+      : 'Shop women’s fashion, gowns, clothing, bags, and shoes from T&D Ladies Fashion in Abuja, Nigeria.';
 
   return {
     title: `${formattedTitle} | T&D Ladies Fashion Nigeria`,
@@ -39,10 +39,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
           `${product.name} Nigeria`,
           `${product.category} online Nigeria`,
           'buy clothes online Nigeria',
-          'fashion boutique Lagos',
+          'fashion boutique Abuja',
           'T&D Ladies Fashion',
         ]
-      : ['women’s fashion Nigeria', 'fashion boutique Lagos', 'T&D Ladies Fashion'],
+      : ['women’s fashion Nigeria', 'fashion boutique Abuja', 'T&D Ladies Fashion'],
     ...(product && {
       openGraph: {
         title: `${product.name} | T&D Ladies Fashion Nigeria`,

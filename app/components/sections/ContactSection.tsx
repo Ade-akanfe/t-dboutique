@@ -63,7 +63,7 @@ export default function ContactSection() {
             
             <h3 className="text-2xl font-serif mb-2 text-white">Direct Inquiries</h3>
             <p className="text-zinc-400 text-sm mb-8">
-              Speak directly with our dedicated fashion consultants in Lagos.
+              Speak directly with our dedicated fashion consultants in Abuja.
             </p>
 
             {/* WhatsApp Quick Action Button */}

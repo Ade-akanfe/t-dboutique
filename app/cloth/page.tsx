@@ -3,7 +3,7 @@ import ClothesPage, { metadata as clothesMetadata } from '../clothes/page';
 
 export const metadata: Metadata = {
   ...clothesMetadata,
-  title: "Women's Clothing & Skirts | T&D Boutique Lagos (Worldwide Delivery)",
+  title: "Women's Clothing & Skirts | T&D Boutique Abuja (Worldwide Delivery)",
   alternates: {
     canonical: '/clothes',
   },

@@ -21,23 +21,23 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "T&D Ladies Fashion | Women's Boutique in Lagos, Nigeria",
+  title: "T&D Ladies Fashion | Women's Boutique in Abuja, Nigeria",
   description:
-    "Shop women's clothing, designer gowns, skirts and blouses, bags, and shoes at T&D Ladies Fashion in Lagos, Nigeria. Browse new arrivals and order online.",
+    "Shop women's clothing, designer gowns, skirts and blouses, bags, and shoes at T&D Ladies Fashion in Abuja, Nigeria. Browse new arrivals and order online.",
   keywords: [
     "women's fashion Nigeria",
     "buy clothes online Nigeria",
     "online clothing store Nigeria",
-    "fashion boutique Lagos",
-    "women's clothing Lagos",
+    "fashion boutique Abuja",
+    "women's clothing Abuja",
     "Nigerian fashion boutique",
     "buy gowns online Nigeria",
-    "wedding guest dresses Lagos",
+    "wedding guest dresses Abuja",
     "occasion wear Nigeria",
     "skirts and blouses Nigeria",
     "women's handbags Nigeria",
     "ladies shoes online Nigeria",
-    "ready-to-wear fashion Lagos",
+    "ready-to-wear fashion Abuja",
     "T&D Ladies Fashion",
   ],
   alternates: {
@@ -49,9 +49,9 @@ export const metadata: Metadata = {
     apple: "/new_logo.png",
   },
   openGraph: {
-    title: "T&D Ladies Fashion | Women's Boutique in Lagos, Nigeria",
+    title: "T&D Ladies Fashion | Women's Boutique in Abuja, Nigeria",
     description:
-      "Shop women's clothing, designer gowns, skirts and blouses, bags, and shoes at T&D Ladies Fashion in Lagos, Nigeria.",
+      "Shop women's clothing, designer gowns, skirts and blouses, bags, and shoes at T&D Ladies Fashion in Abuja, Nigeria.",
     url: SITE_URL,
     siteName: "T&D Ladies Fashion",
     images: [
@@ -67,9 +67,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "T&D Ladies Fashion | Women's Boutique in Lagos, Nigeria",
+    title: "T&D Ladies Fashion | Women's Boutique in Abuja, Nigeria",
     description:
-      "Shop women's clothing, gowns, bags, and shoes from T&D Ladies Fashion in Lagos, Nigeria.",
+      "Shop women's clothing, gowns, bags, and shoes from T&D Ladies Fashion in Abuja, Nigeria.",
     images: ["/hero.jpeg"],
   },
 };
@@ -85,7 +85,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     telephone: CONTACT_DETAILS.phoneHref,
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Lagos",
+      addressLocality: "Abuja",
       addressCountry: "NG",
     },
     areaServed: {
