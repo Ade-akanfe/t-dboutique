@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createSupabaseAdmin } from '../../../../lib/supabaseAdmin';
+import { sendOrderEmail } from '../../../../lib/orderEmail';
 
 const requestSchema = z.object({ orderId: z.string().uuid() });
 
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
 
   const { data: order, error: orderError } = await admin
     .from('orders')
-    .select('id, customer_user_id, customer_email_normalized, customer_name, customer_email, total_amount, status, payment_status')
+    .select('id, customer_user_id, customer_email_normalized, customer_name, customer_email, total_amount, status, payment_status, order_items(product_name, quantity, price, size, color)')
     .eq('id', parsed.data.orderId)
     .maybeSingle();
 
@@ -107,6 +108,19 @@ export async function POST(request: Request) {
     }
   }
 
-  // Temporarily disabled while investigating order placement failures.
-  return NextResponse.json({ success: true, notificationSent: false });
+  const emailResult = await sendOrderEmail(order, 'payment-submitted');
+  if (emailResult.customerError) {
+    console.error('Failed to send account payment submission email to customer:', emailResult.customerError);
+  }
+  if (emailResult.adminError) {
+    console.error('Failed to send account new order notification to admin:', emailResult.adminError);
+  }
+
+  return NextResponse.json({
+    success: true,
+    notificationSent: !emailResult.customerError,
+    ...(emailResult.customerError
+      ? { notificationError: 'Your payment confirmation was recorded, but we could not send the email.' }
+      : {}),
+  });
 }

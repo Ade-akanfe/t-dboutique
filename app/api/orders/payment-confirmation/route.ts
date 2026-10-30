@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createSupabaseAdmin } from '../../../lib/supabaseAdmin';
+import { sendOrderEmail } from '../../../lib/orderEmail';
 
 const paymentConfirmationSchema = z.object({
   orderId: z.string().uuid(),
@@ -32,7 +33,7 @@ export async function POST(request: Request) {
   const tokenHash = createHash('sha256').update(parsed.data.paymentToken).digest('hex');
   const { data: order, error: orderError } = await admin
     .from('orders')
-    .select('id, customer_name, customer_email, total_amount, payment_status, payment_confirmation_token_hash')
+    .select('id, customer_name, customer_email, total_amount, payment_status, payment_confirmation_token_hash, order_items(product_name, quantity, price, size, color)')
     .eq('id', parsed.data.orderId)
     .eq('payment_confirmation_token_hash', tokenHash)
     .maybeSingle();
@@ -64,6 +65,19 @@ export async function POST(request: Request) {
     }
   }
 
-  // Temporarily disabled while investigating order placement failures.
-  return NextResponse.json({ success: true, notificationSent: false });
+  const emailResult = await sendOrderEmail(order, 'payment-submitted');
+  if (emailResult.customerError) {
+    console.error('Failed to send payment submission email to customer:', emailResult.customerError);
+  }
+  if (emailResult.adminError) {
+    console.error('Failed to send new order notification to admin:', emailResult.adminError);
+  }
+
+  return NextResponse.json({
+    success: true,
+    notificationSent: !emailResult.customerError,
+    ...(emailResult.customerError
+      ? { notificationError: 'Your payment confirmation was recorded, but we could not send the email.' }
+      : {}),
+  });
 }

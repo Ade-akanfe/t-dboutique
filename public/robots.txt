@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://tdladiesfashion.com.ng
+Host: https://tdfashions.com.ng
 
 # Sitemaps
-Sitemap: https://tdladiesfashion.com.ng/sitemap.xml
+Sitemap: https://tdfashions.com.ng/sitemap.xml

@@ -59,6 +59,7 @@ export default function CheckoutDialog({ isOpen, items, onClose }: CheckoutDialo
   const [copiedField, setCopiedField] = useState<'account' | 'reference' | null>(null);
   const [copyError, setCopyError] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [emailNotice, setEmailNotice] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -152,9 +153,18 @@ export default function CheckoutDialog({ isOpen, items, onClose }: CheckoutDialo
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(pendingCheckout),
       });
-      const result = await response.json() as { error?: string };
+      const result = await response.json() as {
+        error?: string;
+        notificationSent?: boolean;
+        notificationError?: string;
+      };
       if (!response.ok) throw new Error(result.error ?? 'Unable to submit payment confirmation.');
 
+      setEmailNotice(
+        result.notificationSent
+          ? ''
+          : result.notificationError ?? 'Your payment confirmation was recorded, but we could not send the email. Please contact the boutique.',
+      );
       setCheckout({ step: 'complete', pendingCheckout: null });
       dispatch(clearCart());
     } catch (error) {
@@ -180,6 +190,7 @@ export default function CheckoutDialog({ isOpen, items, onClose }: CheckoutDialo
   const close = () => {
     setCheckout({ step: 'details', pendingCheckout: null });
     setErrorMessage('');
+    setEmailNotice('');
     onClose();
   };
 
@@ -341,7 +352,12 @@ export default function CheckoutDialog({ isOpen, items, onClose }: CheckoutDialo
           <div className="px-5 py-10 text-center sm:px-7">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">✓</div>
             <h3 className="mt-4 text-xl font-semibold text-zinc-900">Payment confirmation received</h3>
-            <p className="mt-2 text-sm leading-6 text-zinc-600">We’ve emailed you a confirmation of your transfer submission. The boutique will verify the payment and send another email when your order is confirmed.</p>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">
+              {emailNotice
+                ? 'Your transfer submission has been recorded. The boutique will verify the payment and contact you when your order is confirmed.'
+                : 'We’ve emailed you a confirmation of your transfer submission. The boutique will verify the payment and send another email when your order is confirmed.'}
+            </p>
+            {emailNotice && <p role="status" className="mt-4 rounded-lg bg-amber-50 px-3 py-2.5 text-sm text-amber-900">{emailNotice}</p>}
             <button onClick={close} className="mt-6 rounded-lg bg-zinc-900 px-6 py-3 text-sm font-semibold text-white hover:bg-zinc-800">Continue shopping</button>
           </div>
         )}

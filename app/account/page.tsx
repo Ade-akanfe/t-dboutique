@@ -136,6 +136,7 @@ export default function AccountPage() {
   const [confirmingOrderId, setConfirmingOrderId] = useState<string | null>(null);
   const [copiedValue, setCopiedValue] = useState<string | null>(null);
   const [paymentMessage, setPaymentMessage] = useState('');
+  const [paymentEmailWarning, setPaymentEmailWarning] = useState(false);
   const [activeTab, setActiveTab] = useState<AccountTab>('dashboard');
 
   useEffect(() => {
@@ -237,6 +238,7 @@ export default function AccountPage() {
     if (!session?.access_token) return;
     setConfirmingOrderId(orderId);
     setPaymentMessage('');
+    setPaymentEmailWarning(false);
     setErrorMessage('');
 
     try {
@@ -248,13 +250,18 @@ export default function AccountPage() {
         },
         body: JSON.stringify({ orderId }),
       });
-      const result = await response.json() as { error?: string };
+      const result = await response.json() as { error?: string; notificationSent?: boolean };
       if (!response.ok) throw new Error(result.error ?? 'Unable to confirm payment.');
 
       setOrders((currentOrders) => currentOrders.map((order) => (
         order.id === orderId ? { ...order, payment_status: 'submitted' } : order
       )));
-      setPaymentMessage('Payment confirmation submitted. We’ll email you after the boutique verifies your transfer.');
+      setPaymentEmailWarning(result.notificationSent !== true);
+      setPaymentMessage(
+        result.notificationSent
+          ? 'Payment confirmation submitted. We’ve emailed you and will contact you again after the boutique verifies your transfer.'
+          : 'Payment confirmation submitted, but we could not send the email. Please contact the boutique.',
+      );
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : 'Unable to confirm payment.');
     } finally {
@@ -270,6 +277,7 @@ export default function AccountPage() {
 
     setConfirmingOrderId(order.id);
     setPaymentMessage('');
+    setPaymentEmailWarning(false);
     setErrorMessage('');
     try {
       const response = await fetch('/api/orders/payment-confirmation', {
@@ -277,12 +285,17 @@ export default function AccountPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderId: order.id, paymentToken: order.paymentToken }),
       });
-      const result = await response.json() as { error?: string };
+      const result = await response.json() as { error?: string; notificationSent?: boolean };
       if (!response.ok) throw new Error(result.error ?? 'Unable to submit payment confirmation.');
       setOrders((currentOrders) => currentOrders.map((currentOrder) => (
         currentOrder.id === order.id ? { ...currentOrder, payment_status: 'submitted' } : currentOrder
       )));
-      setPaymentMessage('Payment confirmation submitted. We’ll email you after the boutique verifies your transfer.');
+      setPaymentEmailWarning(result.notificationSent !== true);
+      setPaymentMessage(
+        result.notificationSent
+          ? 'Payment confirmation submitted. We’ve emailed you and will contact you again after the boutique verifies your transfer.'
+          : 'Payment confirmation submitted, but we could not send the email. Please contact the boutique.',
+      );
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : 'Unable to submit payment confirmation.');
     } finally {
@@ -369,7 +382,7 @@ export default function AccountPage() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {paymentMessage && <p role="status" className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">{paymentMessage}</p>}
+                  {paymentMessage && <p role="status" className={`rounded-xl border p-4 text-sm ${paymentEmailWarning ? 'border-amber-200 bg-amber-50 text-amber-900' : 'border-emerald-200 bg-emerald-50 text-emerald-800'}`}>{paymentMessage}</p>}
                   {orders.map((order) => (
                     <article key={order.id} className="rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6">
                       <header className="flex flex-wrap items-start justify-between gap-3 border-b border-zinc-100 pb-4">
@@ -506,7 +519,7 @@ export default function AccountPage() {
                     </div>
                   )}
                 </section>
-                {paymentMessage && <p role="status" className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">{paymentMessage}</p>}
+                {paymentMessage && <p role="status" className={`rounded-xl border p-4 text-sm ${paymentEmailWarning ? 'border-amber-200 bg-amber-50 text-amber-900' : 'border-emerald-200 bg-emerald-50 text-emerald-800'}`}>{paymentMessage}</p>}
               </div>
             )}
 
@@ -532,7 +545,7 @@ export default function AccountPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                {paymentMessage && <p role="status" className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">{paymentMessage}</p>}
+                {paymentMessage && <p role="status" className={`rounded-xl border p-4 text-sm ${paymentEmailWarning ? 'border-amber-200 bg-amber-50 text-amber-900' : 'border-emerald-200 bg-emerald-50 text-emerald-800'}`}>{paymentMessage}</p>}
                 {orders.map((order) => (
                   <article key={order.id} className="rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6">
                     <header className="flex flex-wrap items-start justify-between gap-3 border-b border-zinc-100 pb-4">

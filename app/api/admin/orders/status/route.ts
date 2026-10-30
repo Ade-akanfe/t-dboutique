@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createSupabaseAdmin } from '../../../../lib/supabaseAdmin';
+import { sendOrderEmail } from '../../../../lib/orderEmail';
 
 const statusSchema = z.object({
   orderId: z.string().uuid(),
@@ -62,7 +63,7 @@ export async function POST(request: Request) {
 
   const { data: order, error: orderError } = await admin
     .from('orders')
-    .select('id, customer_name, customer_email, total_amount, payment_status')
+    .select('id, customer_name, customer_email, total_amount, payment_status, order_items(product_name, quantity, price, size, color)')
     .eq('id', parsed.data.orderId)
     .maybeSingle();
 
@@ -102,6 +103,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, notificationSent: true });
   }
 
-  // Temporarily disabled while investigating order placement failures.
-  return NextResponse.json({ success: true, notificationSent: false });
+  const emailResult = await sendOrderEmail(order, 'order-confirmed');
+  if (emailResult.customerError) {
+    console.error('Failed to send order confirmation email:', emailResult.customerError);
+  }
+
+  return NextResponse.json({
+    success: true,
+    notificationSent: !emailResult.customerError,
+    ...(emailResult.customerError ? { notificationError: emailResult.customerError } : {}),
+  });
 }
