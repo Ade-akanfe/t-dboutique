@@ -1,5 +1,5 @@
 export const BANK_DETAILS = {
-  bank: 'OPay',
-  accountName: 'Ademola Ade-akanfe',
-  accountNumber: '8108349456',
+  bank: 'Access Bank',
+  accountName: 'Tehilah&Don',
+  accountNumber: '0061571614',
 };

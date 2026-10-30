@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Sparkles, Ruler, MessageCircle, Globe, Check, HelpCircle, ArrowRight } from 'lucide-react';
+import { CONTACT_DETAILS } from '../lib/contactDetails';
 
 interface SizeRow {
   uk: string;
@@ -32,7 +33,7 @@ const SIZE_CHART: SizeRow[] = [
 export default function SizeGuideContent() {
   const [unit, setUnit] = useState<'in' | 'cm'>('in');
 
-  const whatsappInquiryUrl = `https://wa.me/2348000000000?text=${encodeURIComponent(
+  const whatsappInquiryUrl = `https://wa.me/${CONTACT_DETAILS.whatsappNumber}?text=${encodeURIComponent(
     'Hello T&D Boutique! I would like assistance with sizing and custom fitting for my order. My measurements are: '
   )}`;
 

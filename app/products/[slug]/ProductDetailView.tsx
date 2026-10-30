@@ -10,6 +10,7 @@ import { parseSizes } from '../../lib/productSizes';
 import { ShoppingBag, MessageSquare, ShieldCheck, Truck, ChevronRight, ChevronLeft, Minus, Plus, Maximize2, X } from 'lucide-react';
 import { useProducts } from '../../context/ProductContext';
 import { cleanProductDescription, cleanProductDetails, cleanProductFabric } from '../../lib/productCopy';
+import { CONTACT_DETAILS } from '../../lib/contactDetails';
 
 interface ProductDetailViewProps {
   product: Product;
@@ -391,7 +392,7 @@ export default function ProductDetailView({ product: initialProduct, relatedProd
 
             {/* Direct WhatsApp Order Button */}
             <a
-              href={`https://wa.me/2348105535967?text=${whatsappMessage}`}
+              href={`https://wa.me/${CONTACT_DETAILS.whatsappNumber}?text=${whatsappMessage}`}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full py-3 px-4 rounded-lg font-semibold text-xs uppercase tracking-wider text-white transition-all flex items-center justify-center gap-2 shadow-sm hover:opacity-90"

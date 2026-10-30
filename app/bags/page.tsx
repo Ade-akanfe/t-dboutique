@@ -3,6 +3,7 @@ import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import CategoryView from '../categories/[slug]/CategoryView';
 import { cloudinaryImage } from '../lib/cloudinaryImages';
+import { SITE_URL } from '../lib/siteUrl';
 
 export const metadata: Metadata = {
   title: 'Luxury Bags & Handbags | T&D Boutique Lagos',
@@ -29,7 +30,7 @@ export default function BagsPage() {
     '@type': ['CollectionPage', 'ClothingStore'],
     name: 'Luxury Bags Collection — T&D Boutique Lagos',
     description: 'Luxury handbags and statement bags curated in Lagos, Nigeria.',
-    url: 'https://tdfashiontrend.com/bags',
+    url: `${SITE_URL}/bags`,
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Lagos',

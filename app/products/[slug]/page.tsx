@@ -4,6 +4,7 @@ import Footer from '../../components/layout/Footer';
 import ProductPageClient from './ProductPageClient';
 import { createPublicSupabaseClient } from '../../lib/publicSupabase';
 import { toCloudinaryImageUrl } from '../../lib/cloudinaryImages';
+import { SITE_URL } from '../../lib/siteUrl';
 
 // Dynamic SEO Metadata for Each Product
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -21,19 +22,34 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const formattedTitle = product?.name || slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ');
   const description =
-    product?.description ||
-    (product
-      ? `Discover ${product.name} at T&D Ladies Fashion. Price: ${product.price}.`
-      : 'Discover luxury fashion pieces at T&D Ladies Fashion Boutique Lagos.');
+    product
+      ? `Shop ${product.name} at T&D Ladies Fashion, a Lagos, Nigeria boutique. ${product.description || `Price: ${product.price}. Order online for delivery across Nigeria.`}`
+          .slice(0, 160)
+      : 'Shop women’s fashion, gowns, clothing, bags, and shoes from T&D Ladies Fashion in Lagos, Nigeria.';
 
   return {
-    title: `${formattedTitle} | T&D Ladies Fashion`,
+    title: `${formattedTitle} | T&D Ladies Fashion Nigeria`,
     description,
+    alternates: {
+      canonical: `/products/${encodeURIComponent(slug)}`,
+    },
+    keywords: product
+      ? [
+          product.name,
+          `${product.name} Nigeria`,
+          `${product.category} online Nigeria`,
+          'buy clothes online Nigeria',
+          'fashion boutique Lagos',
+          'T&D Ladies Fashion',
+        ]
+      : ['women’s fashion Nigeria', 'fashion boutique Lagos', 'T&D Ladies Fashion'],
     ...(product && {
-      keywords: [product.name, product.category, 'Nigerian boutique', 'luxury fashion Lagos'],
       openGraph: {
-        title: `${product.name} | T&D Ladies Fashion`,
+        title: `${product.name} | T&D Ladies Fashion Nigeria`,
         description,
+        url: `${SITE_URL}/products/${encodeURIComponent(slug)}`,
+        siteName: 'T&D Ladies Fashion',
+        locale: 'en_NG',
         images: [
           {
             url: toCloudinaryImageUrl(product.image),

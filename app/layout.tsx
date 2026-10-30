@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { CONTACT_DETAILS } from "./lib/contactDetails";
+import { SITE_URL } from "./lib/siteUrl";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -18,37 +20,92 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "T&D Ladies Fashion | Premium Boutique",
-  description: "Discover elegant clothing, bags, and shoes from T&D Ladies Fashion.",
-  keywords: ["boutique", "fashion", "T&D Ladies Fashion", "clothing", "premium fashion"],
+  metadataBase: new URL(SITE_URL),
+  title: "T&D Ladies Fashion | Women's Boutique in Lagos, Nigeria",
+  description:
+    "Shop women's clothing, designer gowns, skirts and blouses, bags, and shoes at T&D Ladies Fashion in Lagos, Nigeria. Browse new arrivals and order online.",
+  keywords: [
+    "women's fashion Nigeria",
+    "buy clothes online Nigeria",
+    "online clothing store Nigeria",
+    "fashion boutique Lagos",
+    "women's clothing Lagos",
+    "Nigerian fashion boutique",
+    "buy gowns online Nigeria",
+    "wedding guest dresses Lagos",
+    "occasion wear Nigeria",
+    "skirts and blouses Nigeria",
+    "women's handbags Nigeria",
+    "ladies shoes online Nigeria",
+    "ready-to-wear fashion Lagos",
+    "T&D Ladies Fashion",
+  ],
+  alternates: {
+    canonical: "/",
+  },
   icons: {
     icon: "/new_logo.png",
     shortcut: "/new_logo.png",
     apple: "/new_logo.png",
   },
   openGraph: {
-    title: "T&D Ladies Fashion",
-    description: "Discover elegant clothing, bags, and shoes from T&D Ladies Fashion.",
+    title: "T&D Ladies Fashion | Women's Boutique in Lagos, Nigeria",
+    description:
+      "Shop women's clothing, designer gowns, skirts and blouses, bags, and shoes at T&D Ladies Fashion in Lagos, Nigeria.",
+    url: SITE_URL,
+    siteName: "T&D Ladies Fashion",
     images: [
       {
-        url: "/new_logo.png",
-        width: 1380,
-        height: 1301,
+        url: "/hero.jpeg",
+        width: 719,
+        height: 1280,
+        alt: "T&D Ladies Fashion new arrivals",
       },
     ],
-    locale: "en_US",
+    locale: "en_NG",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "T&D Ladies Fashion | Women's Boutique in Lagos, Nigeria",
+    description:
+      "Shop women's clothing, gowns, bags, and shoes from T&D Ladies Fashion in Lagos, Nigeria.",
+    images: ["/hero.jpeg"],
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const businessStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "ClothingStore",
+    name: "T&D Ladies Fashion",
+    url: SITE_URL,
+    image: `${SITE_URL}/hero.jpeg`,
+    email: CONTACT_DETAILS.email,
+    telephone: CONTACT_DETAILS.phoneHref,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Lagos",
+      addressCountry: "NG",
+    },
+    areaServed: {
+      "@type": "Country",
+      name: "Nigeria",
+    },
+    currenciesAccepted: "NGN",
+  };
+
   return (
     <html
-      lang="en"
+      lang="en-NG"
       data-scroll-behavior="smooth"
       className={`${playfair.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans bg-zinc-50 text-zinc-900">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(businessStructuredData) }}
+        />
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -8,8 +8,6 @@ import type { CategoryInfo, Product } from '../lib/productTypes';
 
 export type { CategoryInfo, Product } from '../lib/productTypes';
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 // ─── DB row → app type converters ────────────────────────────────────────────
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,7 +26,7 @@ function rowToProduct(row: any): Product {
     isNew: row.is_new ?? false,
     description: row.description ?? undefined,
     details: row.details ?? [],
-    sizes: (row.sizes ?? []).flatMap((s: string) => parseSizes(s)),
+    sizes: (row.sizes ?? []).flatMap((size: string) => parseSizes(size)),
     colors: row.colors ?? [],
     fabric: row.fabric ?? undefined,
     createdAt: row.created_at ?? undefined,
@@ -105,21 +103,9 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
 
   // Initial load
   useEffect(() => {
-    let active = true;
-    const loadCatalog = async () => {
-      try {
-        await Promise.all([refreshProducts(), refreshCategories()]);
-      } catch (error) {
-        console.error('Failed to initialize the Supabase catalog:', error);
-      } finally {
-        if (active) setIsLoaded(true);
-      }
-    };
-
-    void loadCatalog();
-    return () => {
-      active = false;
-    };
+    Promise.all([refreshProducts(), refreshCategories()]).finally(() =>
+      setIsLoaded(true)
+    );
   }, [refreshProducts, refreshCategories]);
 
   // ── CRUD — Products ────────────────────────────────────────────────────────
@@ -181,6 +167,46 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
 
   const updateProduct = useCallback(
     async (id: string | number, updatedData: Partial<Product>): Promise<boolean> => {
+      // Promote a static fallback product to a real Supabase row on first edit.
+      if (typeof id === 'number') {
+        const currentProduct = products.find((p) => String(p.id) === String(id));
+        if (!currentProduct) return false;
+
+        const product = { ...currentProduct, ...updatedData };
+        const row = {
+          slug: product.slug,
+          name: product.name,
+          price: product.price,
+          raw_price: product.rawPrice,
+          image: product.image,
+          gallery: product.gallery ?? [],
+          category: product.category,
+          category_slug: product.categorySlug,
+          badge: product.badge ?? null,
+          is_new: product.isNew ?? false,
+          description: product.description ?? null,
+          details: product.details ?? [],
+          sizes: product.sizes ?? [],
+          colors: product.colors ?? [],
+          fabric: product.fabric ?? null,
+        };
+
+        const { data, error } = await supabase
+          .from('products')
+          .upsert(row, { onConflict: 'slug' })
+          .select()
+          .single();
+
+        if (error || !data) {
+          console.error('Failed to save fallback product:', error?.message);
+          return false;
+        }
+
+        const savedProduct = rowToProduct(data);
+        setProducts((prev) => prev.map((p) => (String(p.id) === String(id) ? savedProduct : p)));
+        return true;
+      }
+
       const updateRow: Record<string, unknown> = {};
       if (updatedData.name !== undefined) updateRow.name = updatedData.name;
       if (updatedData.slug !== undefined) updateRow.slug = updatedData.slug;
@@ -215,7 +241,7 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
       );
       return true;
     },
-    []
+    [products]
   );
 
   const deleteProduct = useCallback(async (id: string | number): Promise<boolean> => {
@@ -292,17 +318,11 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
     (categorySlug: string): Product[] => {
       const normalized = categorySlug.toLowerCase();
       if (normalized === 'all') return products;
-      return products
-        .filter(
+      return products.filter(
         (p) =>
           p.categorySlug.toLowerCase() === normalized ||
           p.category.toLowerCase().includes(normalized)
-        )
-        .sort(
-          (a, b) =>
-            (Date.parse(b.createdAt ?? '') || 0) -
-            (Date.parse(a.createdAt ?? '') || 0)
-        );
+      );
     },
     [products]
   );

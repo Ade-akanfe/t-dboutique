@@ -3,6 +3,7 @@ import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import CategoryView from '../categories/[slug]/CategoryView';
 import { cloudinaryImage } from '../lib/cloudinaryImages';
+import { SITE_URL } from '../lib/siteUrl';
 
 export const metadata: Metadata = {
   title: "Women's Clothes, Skirts & Blouses | T&D Boutique Lagos (Worldwide Delivery)",
@@ -57,7 +58,7 @@ export default function ClothesPage() {
     name: "Women's Clothing Collection — T&D Boutique Lagos",
     description:
       "Exclusive skirts, blouses, and fashion looks crafted and curated in Lagos, Nigeria with worldwide express delivery.",
-    url: 'https://tdfashiontrend.com/clothes',
+    url: `${SITE_URL}/clothes`,
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Lagos',

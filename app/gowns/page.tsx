@@ -3,6 +3,7 @@ import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import CategoryView from '../categories/[slug]/CategoryView';
 import { cloudinaryImage } from '../lib/cloudinaryImages';
+import { SITE_URL } from '../lib/siteUrl';
 
 export const metadata: Metadata = {
   title: 'Designer Gowns & Luxury Evening Dresses | T&D Boutique Lagos (Worldwide Delivery)',
@@ -58,7 +59,7 @@ export default function GownsPage() {
     name: 'Designer Gowns Collection — T&D Boutique Lagos',
     description:
       'Luxury designer gowns and evening dresses handcrafted in Lagos, Nigeria with worldwide express shipping.',
-    url: 'https://tdfashiontrend.com/gowns',
+    url: `${SITE_URL}/gowns`,
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Lagos',

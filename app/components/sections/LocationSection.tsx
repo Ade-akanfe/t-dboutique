@@ -1,3 +1,5 @@
+import { CONTACT_DETAILS } from '../../lib/contactDetails';
+
 export default function LocationSection() {
   return (
     <section className="py-10 bg-zinc-50 border-t border-zinc-200">
@@ -24,8 +26,7 @@ export default function LocationSection() {
                 </h3>
                 <p className="text-zinc-600 leading-relaxed">
                   T&amp;D Ladies Fashion<br />
-                  123 Fashion Avenue<br />
-                  New York, NY 10001
+                  Abuja, Nigeria
                 </p>
               </div>
 
@@ -47,22 +48,22 @@ export default function LocationSection() {
             
             <div className="mt-10 pt-8 border-t border-zinc-100">
               <p className="text-zinc-900 font-medium mb-1">Contact Us</p>
-              <a href="mailto:contact@tdfashiontrend.com" className="text-zinc-500 hover:text-zinc-900 transition-colors block">contact@tdfashiontrend.com</a>
-              <a href="tel:+2348105535967" className="text-zinc-500 hover:text-zinc-900 transition-colors block">+234 810 553 5967</a>
+              <a href={`mailto:${CONTACT_DETAILS.email}`} className="text-zinc-500 hover:text-zinc-900 transition-colors block">Email: {CONTACT_DETAILS.email}</a>
+              <a href={`tel:${CONTACT_DETAILS.phoneHref}`} className="text-zinc-500 hover:text-zinc-900 transition-colors block">Phone nos. {CONTACT_DETAILS.phoneDisplay}</a>
+              <a href={`https://wa.me/${CONTACT_DETAILS.whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-zinc-900 transition-colors block">WhatsApp: {CONTACT_DETAILS.phoneDisplay}</a>
             </div>
           </div>
 
           {/* Map */}
           <div className="lg:col-span-2 rounded-2xl overflow-hidden h-[500px] shadow-sm border border-zinc-100 bg-zinc-200">
-            {/* Embedded Google Map - Using a general NY location as placeholder */}
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.2528000654!2d-74.14448744574972!3d40.69763123330614!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY!5e0!3m2!1sen!2sus!4v1707323136270!5m2!1sen!2sus" 
+              src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d1580.4426085335217!2d7.46433199781203!3d9.082536636826049!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zOcKwMDQnNTcuMyJOIDfCsDI3JzU0LjUiRQ!5e1!3m2!1sen!2sng!4v1793358242239!5m2!1sen!2sng"
               width="100%" 
               height="100%" 
               style={{ border: 0 }} 
               allowFullScreen={false} 
               loading="lazy" 
-              referrerPolicy="no-referrer-when-downgrade"
+              referrerPolicy="strict-origin-when-cross-origin"
               title="Boutique Location"
             ></iframe>
           </div>

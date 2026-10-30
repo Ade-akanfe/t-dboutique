@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { Send, Phone, Mail, Clock, MessageSquare, Sparkles } from 'lucide-react';
+import { CONTACT_DETAILS } from '../../lib/contactDetails';
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -67,7 +68,7 @@ export default function ContactSection() {
 
             {/* WhatsApp Quick Action Button */}
             <a
-              href="https://wa.me/2348105535967?text=Hello%20T%26D%20Fashion%20Trend,%20I%20would%20like%20to%20inquire%20about..."
+              href={`https://wa.me/${CONTACT_DETAILS.whatsappNumber}?text=${encodeURIComponent('Hello T&D Ladies Fashion, I would like to inquire about your collection.')}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-3 w-full py-3.5 px-6 rounded-xl font-semibold text-sm tracking-wide text-zinc-900 transition-all duration-300 transform hover:scale-[1.02] shadow-lg mb-8"
@@ -85,8 +86,8 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Call / WhatsApp</h4>
-                  <a href="tel:+2348105535967" className="text-sm font-medium text-zinc-200 mt-0.5 block hover:text-gold-400 transition-colors">
-                    +234 810 553 5967
+                  <a href={`tel:${CONTACT_DETAILS.phoneHref}`} className="text-sm font-medium text-zinc-200 mt-0.5 block hover:text-gold-400 transition-colors">
+                    {CONTACT_DETAILS.phoneDisplay}
                   </a>
                 </div>
               </div>
@@ -97,7 +98,9 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Email Support</h4>
-                  <p className="text-sm font-medium text-zinc-200 mt-0.5">contact@tdfashiontrend.com</p>
+                  <a href={`mailto:${CONTACT_DETAILS.email}`} className="mt-0.5 block break-all text-sm font-medium text-zinc-200 hover:text-gold-400 transition-colors">
+                    {CONTACT_DETAILS.email}
+                  </a>
                 </div>
               </div>
 

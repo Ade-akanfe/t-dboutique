@@ -2,9 +2,9 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import AddToCartButton from './AddToCartButton';
 import { SlidersHorizontal, Sparkles, Search } from 'lucide-react';
 import { useProducts } from '../../context/ProductContext';
+import ProductCard from '../../components/products/ProductCard';
 
 interface CategoryViewProps {
   currentSlug: string;
@@ -190,67 +190,7 @@ export default function CategoryView({
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
           {filteredProducts.map((product) => (
-            <div key={product.id} className="group flex flex-col justify-between">
-              <div>
-                {/* Image Container with Link */}
-                <div className="relative aspect-[3/4] bg-zinc-100 mb-4 overflow-hidden rounded-xl">
-                  <Link href={`/products/${product.slug}`} className="block w-full h-full">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="object-contain object-center w-full h-full group-hover:scale-[1.18] transition-transform duration-500 ease-out"
-                    />
-                  </Link>
-                  
-                  {/* Badge */}
-                  {product.badge && (
-                    <div
-                      className="absolute top-3 left-3 text-white text-[10px] md:text-xs font-bold uppercase tracking-wider py-1 px-2.5 rounded-full shadow-sm pointer-events-none"
-                      style={{ background: 'linear-gradient(135deg, #D4AF37 0%, #a18143 100%)' }}
-                    >
-                      {product.badge}
-                    </div>
-                  )}
-
-                  {/* Dark subtle overlay on hover */}
-                  <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                  
-                  {/* Quick Add to Cart button */}
-                  <AddToCartButton product={product} />
-                </div>
-
-                {/* Product Meta */}
-                <div>
-                  <p className="text-[11px] md:text-xs text-zinc-400 uppercase tracking-wider mb-1">{product.category}</p>
-                  <Link href={`/products/${product.slug}`} className="block group">
-                    <h3 className="text-xs md:text-sm font-serif text-zinc-900 leading-snug group-hover:text-gold-500 transition-colors line-clamp-2">
-                      {product.name}
-                    </h3>
-                  </Link>
-
-                  {/* Size boxes */}
-                  {product.sizes && product.sizes.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {product.sizes.map((sz) => (
-                        <span
-                          key={sz}
-                          className="inline-block text-[10px] font-medium px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-600 border border-zinc-200"
-                        >
-                          {sz}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="mt-2 pt-2 border-t border-zinc-100 flex items-center justify-between">
-                <p className="text-sm md:text-base font-bold" style={{ color: '#D4AF37' }}>
-                  {product.price}
-                </p>
-                <span className="text-[11px] text-zinc-400 font-medium">In Stock</span>
-              </div>
-            </div>
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       )}

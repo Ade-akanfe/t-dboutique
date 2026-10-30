@@ -107,7 +107,7 @@ export default function Navbar() {
         className={`fixed w-full top-0 z-40 will-change-transform transition-colors duration-200 ${
           scrolled
             ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-zinc-200/80"
-            : "bg-white/85 backdrop-blur-sm border-b border-zinc-100/60 py-2"
+            : "bg-white/45 backdrop-blur-sm border-b border-zinc-100/60 py-2"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -125,14 +125,14 @@ export default function Navbar() {
                 height={96}
                 priority
                 className="h-18 w-18 shrink-0 object-contain sm:h-20 sm:w-20 lg:h-20 lg:w-20"
-              />
+              />  
               <span className="flex flex-col pl-2 font-playfair leading-none tracking-tight sm:pl-3">
                 <span className="text-base font-bold text-zinc-950 sm:text-xl md:text-2xl">
                   T<span className="text-purple-800">&amp;</span>D
                 </span>
                 <span className=" whitespace-nowrap text-[0.55rem] font-semibold uppercase tracking-[0.14em] text-amber-900 sm:text-xs sm:tracking-[0.2em]">
                   Ladies Fashion
-                </span>
+                </span> 
                 <span
                   aria-hidden="true"
                   className="mt-1 h-px w-8 bg-gradient-to-r from-purple-800 via-amber-500 to-purple-800 sm:w-10"

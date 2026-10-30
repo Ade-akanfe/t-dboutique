@@ -3,6 +3,7 @@ import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import CategoryView from '../categories/[slug]/CategoryView';
 import { cloudinaryImage } from '../lib/cloudinaryImages';
+import { SITE_URL } from '../lib/siteUrl';
 
 export const metadata: Metadata = {
   title: 'Luxury Shoes & Footwear | T&D Boutique Lagos',
@@ -29,7 +30,7 @@ export default function ShoesPage() {
     '@type': ['CollectionPage', 'ClothingStore'],
     name: 'Luxury Shoes Collection — T&D Boutique Lagos',
     description: 'Luxury footwear and statement shoes curated in Lagos, Nigeria.',
-    url: 'https://tdfashiontrend.com/shoes',
+    url: `${SITE_URL}/shoes`,
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Lagos',
