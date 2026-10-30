@@ -132,14 +132,6 @@ export default function Footer() {
                   My Orders
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/admin"
-                  className="flex items-center gap-1.5 text-stone-500 transition-colors hover:text-stone-950"
-                >
-                  ⚙️ Admin Portal
-                </Link>
-              </li>
             </ul>
           </div>
 

@@ -8,7 +8,15 @@ import { ShoppingBag } from "lucide-react";
 import type { Product } from "../../lib/productTypes";
 import { addToCart } from "../../store/features/cartSlice";
 
-export default function ProductCard({ product }: { product: Product }) {
+interface ProductCardProps {
+  product: Product;
+  showBadge?: boolean;
+}
+
+export default function ProductCard({
+  product,
+  showBadge = true,
+}: ProductCardProps) {
   const dispatch = useDispatch();
 
   const handleAddToCart = () => {
@@ -34,7 +42,7 @@ export default function ProductCard({ product }: { product: Product }) {
           />
         </Link>
 
-        {product.badge && (
+        {showBadge && product.badge && (
           <span className="pointer-events-none absolute left-3 top-3 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#a18143] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm md:text-xs">
             {product.badge}
           </span>
@@ -45,7 +53,7 @@ export default function ProductCard({ product }: { product: Product }) {
         <button
           type="button"
           onClick={handleAddToCart}
-          className="absolute bottom-3 left-1/2 inline-flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-sm bg-gradient-to-br from-[#D4AF37] to-[#a18143] px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition-opacity duration-300 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a18143] sm:translate-y-3 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100 sm:group-focus-within:translate-y-0 sm:group-focus-within:opacity-100"
+          className="invisible absolute bottom-3 left-1/2 inline-flex -translate-x-1/2 translate-y-3 items-center gap-2 whitespace-nowrap rounded-sm bg-gradient-to-br from-[#D4AF37] to-[#a18143] px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white opacity-0 transition-all duration-300 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a18143] group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100"
         >
           <ShoppingBag className="h-3.5 w-3.5" />
           Add to Cart

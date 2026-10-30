@@ -11,7 +11,6 @@ import {
   Search,
   Menu,
   X,
-  ShieldCheck,
   UserRound,
 } from "lucide-react";
 import CartDrawer from "../cart/CartDrawer";
@@ -288,18 +287,6 @@ export default function Navbar() {
               >
                 <UserRound className="h-4 w-4" />
                 {isAuthenticated ? "My Account" : "Sign In"}
-              </Link>
-              <Link
-                href="/admin"
-                onClick={() => setIsOpen(false)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-zinc-900 shadow-sm"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #D4AF37 0%, #a18143 100%)",
-                }}
-              >
-                <ShieldCheck className="w-4 h-4" />
-                Admin Portal
               </Link>
             </div>
           </div>

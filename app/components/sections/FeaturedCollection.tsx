@@ -64,7 +64,7 @@ export default function FeaturedCollection() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               className="h-full"
             >
-              <ProductCard product={item} />
+              <ProductCard product={item} showBadge={false} />
             </motion.div>
           ))}
         </div>

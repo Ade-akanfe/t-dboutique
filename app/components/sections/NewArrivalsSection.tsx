@@ -34,7 +34,7 @@ export default function NewArrivalsSection() {
 
         <div className="grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-4">
           {newArrivals.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} showBadge={false} />
           ))}
         </div>
 
